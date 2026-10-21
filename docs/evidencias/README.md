@@ -45,6 +45,21 @@ node test/benchmark-modelos.js    # comparativa de latencia y calidad de modelos
 | `05-dashboard.png` | Dashboard analítico con FRT, MTTR, cumplimiento de SLA y gráficos |
 | `06-analistas.png` | Gestión de analistas por el administrador |
 | `errores_consola.txt` | Errores de consola del recorrido: **0** |
+| `03c-recorte-demo.png` | Recorte ampliado del resultado del triaje, usado en la presentación del proyecto |
+
+## Identidad visual del producto
+
+La interfaz aplica un **sistema de diseño propio**, construido sobre tokens CSS en
+`frontend/src/styles.css`, con estética de «ticket / recibo`:
+
+| Elemento | Criterio de diseño |
+|---|---|
+| Paleta | Tinta profunda (`#0B0D12`) sobre papel cálido (`#F1EFE9`), acento rojo de tinta (`#DC4326`) y verde operativo (`#177A52`) |
+| Tipografía | Titulares en grotesca pesada con interletrado negativo; **datos en monoespaciada** con cifras tabulares |
+| Tarjetas de ticket | Formato recibo: separadores punteados, filas etiqueta/valor y borde inferior perforado |
+| Navegación | Barra de tinta con esquinas inferiores redondeadas y control segmentado tipo píldora |
+| Estados | Etiquetas monoespaciadas en mayúsculas, con semántica de color por severidad y sentimiento |
+| Gráficos | Paleta propia coherente con la interfaz, ejes y rejillas en gris tenue y cifras tabulares |
 
 ## 03-datos — Evidencia extraída de la base de datos
 
