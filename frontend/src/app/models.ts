@@ -25,6 +25,8 @@ export interface Ticket {
   cliente_nombre?: string | null;
   sla_horas?: number | null;
   creado_el?: string;
+  primer_respuesta_el?: string | null;
+  cerrado_el?: string | null;
   resuelto_el?: string | null;
   proveedor_ia?: string | null;
   motivo_reasignacion?: string | null;

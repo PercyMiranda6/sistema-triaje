@@ -54,20 +54,20 @@ export class DashboardComponent implements OnDestroy {
     this.destruir();
 
     const COLOR_ESTADO: Record<string, string> = {
-      nuevo: '#94a3b8',
-      asignado: '#2563eb',
-      en_proceso: '#f59e0b',
-      resuelto: '#22c55e',
-      cerrado: '#64748b',
-      rechazado: '#ef4444',
+      nuevo: '#9A9EA8',
+      asignado: '#0B0D12',
+      en_proceso: '#C67A08',
+      resuelto: '#177A52',
+      cerrado: '#757A87',
+      rechazado: '#B3261E',
     };
     const COLOR_SEV: Record<string, string> = {
-      Critica: '#dc2626',
-      Alta: '#f97316',
-      Media: '#eab308',
-      Baja: '#22c55e',
+      Critica: '#B3261E',
+      Alta: '#DC4326',
+      Media: '#C67A08',
+      Baja: '#177A52',
     };
-    const COLOR_CAT = ['#2563eb', '#7c3aed', '#0891b2', '#db2777', '#65a30d'];
+    const COLOR_CAT = ['#0B0D12', '#DC4326', '#234F8F', '#C67A08', '#177A52'];
 
     const ESTADO_TEXTO: Record<string, string> = {
       nuevo: 'Nuevo',
@@ -82,8 +82,28 @@ export class DashboardComponent implements OnDestroy {
       responsive: true,
       maintainAspectRatio: false,
       ...(cutout ? { cutout } : {}),
-      plugins: { legend: { position: 'right' as const, labels: { boxWidth: 12, padding: 12 } } },
+      plugins: {
+        legend: {
+          position: 'right' as const,
+          labels: {
+            boxWidth: 10,
+            boxHeight: 10,
+            padding: 14,
+            color: '#3D424E',
+            font: { family: "'Inter', 'Segoe UI', sans-serif", size: 11 },
+          },
+        },
+      },
     });
+
+    const ejes = {
+      grid: { color: 'rgba(20, 22, 28, 0.07)', drawTicks: false },
+      ticks: {
+        color: '#9A9EA8',
+        font: { family: "'JetBrains Mono', Consolas, monospace", size: 10 },
+        padding: 8,
+      },
+    };
 
     const crear = (el: HTMLCanvasElement | undefined, config: ChartConfiguration) => {
       if (!el) {
@@ -99,7 +119,8 @@ export class DashboardComponent implements OnDestroy {
         labels: d.estado.map((e) => ESTADO_TEXTO[e.estado] || e.estado),
         datasets: [{
           data: d.estado.map((e) => e.cantidad),
-          backgroundColor: d.estado.map((e) => COLOR_ESTADO[e.estado] || '#94a3b8'),
+          backgroundColor: d.estado.map((e) => COLOR_ESTADO[e.estado] || '#9A9EA8'),
+          borderColor: '#FFFFFF',
           borderWidth: 2,
         }],
       },
@@ -113,10 +134,17 @@ export class DashboardComponent implements OnDestroy {
         datasets: [{
           label: 'Tickets',
           data: d.severidad.map((s) => s.cantidad),
-          backgroundColor: d.severidad.map((s) => COLOR_SEV[s.severidad] || '#94a3b8'),
+          backgroundColor: d.severidad.map((s) => COLOR_SEV[s.severidad] || '#9A9EA8'),
+          borderRadius: 6,
+          maxBarThickness: 48,
         }],
       },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: { x: { grid: { display: false }, ticks: ejes.ticks }, y: { beginAtZero: true, grid: ejes.grid, ticks: ejes.ticks, border: { display: false } } },
+      },
     });
 
     crear(this.canvasCategoria()?.nativeElement, {
@@ -126,6 +154,8 @@ export class DashboardComponent implements OnDestroy {
         datasets: [{
           data: d.categoria.map((c) => c.cantidad),
           backgroundColor: COLOR_CAT,
+          borderColor: '#FFFFFF',
+          borderWidth: 2,
         }],
       },
       options: opcionesCirculares(null),
@@ -138,13 +168,22 @@ export class DashboardComponent implements OnDestroy {
         datasets: [{
           label: 'Tickets creados',
           data: d.por_dia.map((x) => x.cantidad),
-          borderColor: '#2563eb',
-          backgroundColor: 'rgba(37, 99, 235, 0.15)',
+          borderColor: '#DC4326',
+          backgroundColor: 'rgba(220, 67, 38, 0.12)',
+          pointBackgroundColor: '#DC4326',
+          pointBorderColor: '#FFFFFF',
+          pointBorderWidth: 2,
+          pointRadius: 4,
           fill: true,
-          tension: 0.3,
+          tension: 0.35,
         }],
       },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: { x: { grid: { display: false }, ticks: ejes.ticks }, y: { beginAtZero: true, grid: ejes.grid, ticks: ejes.ticks, border: { display: false } } },
+      },
     });
   }
 

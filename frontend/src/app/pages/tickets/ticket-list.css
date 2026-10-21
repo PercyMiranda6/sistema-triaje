@@ -1,91 +1,103 @@
-.page-head {
+/* ============================================================
+   BANDEJA — barra de filtros + tarjetas tipo recibo
+   ============================================================ */
+.filter-bar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 1rem;
-}
-
-.filters {
-  display: flex;
-  gap: 0.8rem;
   flex-wrap: wrap;
-  align-items: flex-end;
-  margin-bottom: 1rem;
-  padding: 1rem;
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  padding: 0.7rem 0.9rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow-sm);
 }
 
-.filters label {
-  margin-bottom: 0;
+.filter-selects {
+  display: flex;
+  gap: 0.9rem;
+  margin-left: auto;
+  flex-wrap: wrap;
 }
+
+.filter-selects label {
+  margin-bottom: 0;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.filter-selects select { width: auto; min-width: 150px; padding: 0.45rem 2rem 0.45rem 0.7rem; font-size: 0.85rem; }
 
 .ticket-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  gap: 1.15rem;
+  align-items: start;
+}
+
+/* --- Tarjeta --- */
+.ticket-list .receipt {
+  cursor: pointer;
+  transition: transform 0.16s cubic-bezier(0.2, 0.7, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.ticket-list .receipt:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--muted-2);
+}
+
+.ticket-list .receipt:active { transform: translateY(-1px); }
+
+/* franja de severidad */
+.ticket-list .receipt { position: relative; overflow: hidden; }
+
+.ticket-list .receipt::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--muted-2);
+}
+
+.sev-critica::before { background: var(--danger); }
+.sev-alta::before { background: var(--accent); }
+.sev-media::before { background: var(--amber); }
+.sev-baja::before { background: var(--ok); }
+
+.receipt-foot { border-top: 1px dashed var(--line); }
+
+.receipt-amount small {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted-2);
+  letter-spacing: 0;
+}
+
+.prio-alta { color: var(--danger); }
+.prio-media { color: var(--accent); }
+
+.foot-tags {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  align-items: flex-end;
+  gap: 0.35rem;
 }
 
-.ticket-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  cursor: pointer;
-  transition: transform 0.1s, box-shadow 0.15s;
-  border-left: 6px solid #94a3b8;
-}
-
-.ticket-row:hover {
-  transform: translateX(2px);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
-}
-
-.ticket-critica { border-left-color: #dc2626; }
-.ticket-alta { border-left-color: #f97316; }
-.ticket-media { border-left-color: #eab308; }
-.ticket-baja { border-left-color: #22c55e; }
-
-.ticket-code {
-  font-weight: 700;
-  color: #2563eb;
-  font-size: 0.85rem;
-}
-
-.ticket-asunto {
+.mono-chip {
+  background: var(--paper);
+  color: var(--muted);
+  border-color: var(--line);
   font-weight: 600;
-  margin: 0.1rem 0;
+  letter-spacing: 0.06em;
 }
 
-.ticket-meta {
-  font-size: 0.78rem;
-  color: #64748b;
-}
-
-.ticket-right {
-  display: flex;
-  gap: 0.4rem;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
-
-.estado {
-  background: #334155;
-  color: #fff;
-  text-transform: capitalize;
-}
-
-.pagination {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.empty {
-  color: #64748b;
-  text-align: center;
-  padding: 2rem;
+@media (max-width: 640px) {
+  .filter-selects { margin-left: 0; width: 100%; }
+  .filter-selects select { width: 100%; }
+  .ticket-list { grid-template-columns: 1fr; }
 }

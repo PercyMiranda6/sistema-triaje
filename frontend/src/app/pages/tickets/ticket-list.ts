@@ -33,6 +33,14 @@ export class TicketListComponent {
   prioClase = prioClase;
   estadoTexto = estadoTexto;
 
+  estados = [
+    { v: '', t: 'Todos' },
+    { v: 'nuevo', t: 'Nuevos' },
+    { v: 'asignado', t: 'Asignados' },
+    { v: 'en_proceso', t: 'En proceso' },
+    { v: 'resuelto', t: 'Resueltos' },
+  ];
+
   constructor() {
     this.cargar();
   }

@@ -1,38 +1,52 @@
 <div class="auth-wrap">
-  <form class="card auth-card" (ngSubmit)="enviar()">
-    <div class="auth-header">
-      <span class="auth-logo">⬡</span>
+  <div class="auth-inner">
+    <div class="auth-intro">
+      <span class="auth-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9V6.5A1.5 1.5 0 0 1 4.5 5h15A1.5 1.5 0 0 1 21 6.5V9" />
+          <path d="M3 9h18v7.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 16.5V9Z" />
+          <path d="M8 13.5h8" />
+        </svg>
+      </span>
       <h1>Triaje TI</h1>
-      <p>Sistema Inteligente de Soporte con PLN</p>
-    </div>
-
-    @if (error(); as err) {
-      <div class="alert alert-error">{{ err }}</div>
-    }
-
-    <label>
-      Correo electrónico
-      <input type="email" name="email" [(ngModel)]="email" required autocomplete="email" placeholder="usuario@empresa.com" />
-    </label>
-
-    <label>
-      Contraseña
-      <input type="password" name="password" [(ngModel)]="password" required autocomplete="current-password" placeholder="••••••••" />
-    </label>
-
-    <button class="btn btn-primary btn-block" type="submit">Iniciar sesión</button>
-
-    <p class="text-center muted">
-      ¿No tienes cuenta? <a routerLink="/registro">Regístrate</a>
-    </p>
-
-    <div class="auth-hint">
-      <strong>Cuentas demo:</strong>
-      <ul>
-        <li>Cliente: juan.perez@empresa.com / Cliente123!</li>
-        <li>Analista: ana.torres@empresa.com / Analista123!</li>
-        <li>Admin: admin@triaje.com / Admin123!</li>
+      <p>Sistema inteligente de soporte con Procesamiento de Lenguaje Natural: cada ticket se clasifica, se prioriza y se enruta automáticamente.</p>
+      <ul class="auth-features">
+        <li>Anonimización de datos personales conforme a la Ley N.° 29733</li>
+        <li>Prioridad dinámica: severidad técnica + frustración del usuario</li>
+        <li>Enrutamiento al especialista con menor carga de trabajo</li>
       </ul>
     </div>
-  </form>
+
+    <form class="auth-card" (ngSubmit)="enviar()">
+      <span class="eyebrow">Acceso al sistema</span>
+      <h2>Iniciar sesión</h2>
+
+      @if (error(); as err) {
+        <div class="alert alert-error">{{ err }}</div>
+      }
+
+      <label>
+        Correo electrónico
+        <input type="email" name="email" [(ngModel)]="email" required autocomplete="email" placeholder="usuario@empresa.com" />
+      </label>
+
+      <label>
+        Contraseña
+        <input type="password" name="password" [(ngModel)]="password" required autocomplete="current-password" placeholder="••••••••" />
+      </label>
+
+      <button class="btn btn-accent btn-block" type="submit">Entrar al sistema</button>
+
+      <p class="text-center muted">
+        ¿No tienes cuenta? <a routerLink="/registro">Regístrate</a>
+      </p>
+
+      <div class="auth-hint">
+        <span class="label">Cuentas de demostración</span>
+        <div class="receipt-row"><span class="k">Cliente</span><span class="v">juan.perez@empresa.com / Cliente123!</span></div>
+        <div class="receipt-row"><span class="k">Analista</span><span class="v">ana.torres@empresa.com / Analista123!</span></div>
+        <div class="receipt-row"><span class="k">Admin</span><span class="v">admin@triaje.com / Admin123!</span></div>
+      </div>
+    </form>
+  </div>
 </div>

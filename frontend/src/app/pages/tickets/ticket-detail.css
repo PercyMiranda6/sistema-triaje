@@ -1,91 +1,46 @@
+/* ============================================================
+   DETALLE DEL TICKET
+   ============================================================ */
 .detail-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  grid-template-columns: minmax(320px, 0.85fr) 1.15fr;
+  gap: 1.15rem;
+  align-items: start;
 }
 
-.result-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-  gap: 0.6rem;
-}
-
-.result-item {
-  background: #f8fafc;
-  border-radius: 8px;
-  padding: 0.6rem 0.8rem;
-}
-
-.label {
-  display: block;
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #64748b;
-}
+.detail-side { display: flex; flex-direction: column; gap: 1.15rem; }
 
 .desc {
+  margin-top: 0.5rem;
+  color: var(--text-2);
+  line-height: 1.65;
+  font-size: 0.92rem;
   white-space: pre-wrap;
-  line-height: 1.55;
+}
+
+.ticket-note {
   margin: 0;
+  padding: 0.85rem 1.3rem 1.05rem;
+  background: var(--paper);
+  border-top: 1px dashed var(--line);
+  font-size: 0.82rem;
+  color: var(--muted);
+  font-style: italic;
 }
 
-.actions-card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-}
+.actions-card { margin-top: 1.15rem; }
 
-.mt {
-  margin-top: 0.8rem;
-  border-top: 1px solid #e2e8f0;
-  padding-top: 0.8rem;
-}
-
-.info-card {
-  margin-top: 1rem;
-}
-
-.info-card h2 {
-  margin-bottom: 0.9rem;
-}
-
-.info-grid {
+.management-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.6rem;
+  margin-top: 0.4rem;
 }
 
-.info-item {
-  background: #f8fafc;
-  border: 1px solid #eef2f7;
-  border-radius: 8px;
-  padding: 0.65rem 0.9rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
+.management-grid label { margin-bottom: 0.8rem; }
 
-.info-item .label {
-  font-size: 0.68rem;
-}
+.prio-alta { color: var(--danger); }
 
-.info-item strong {
-  font-size: 0.9rem;
-  color: #1e293b;
-  overflow-wrap: anywhere;
-}
-
-.estado {
-  justify-self: flex-start;
-  background: #334155;
-  color: #fff;
-  text-transform: capitalize;
-}
-
-@media (max-width: 768px) {
-  .detail-grid {
-    grid-template-columns: 1fr;
-  }
+@media (max-width: 900px) {
+  .detail-grid { grid-template-columns: 1fr; }
 }

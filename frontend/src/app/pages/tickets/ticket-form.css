@@ -1,46 +1,37 @@
-.form-card {
-  max-width: 720px;
+/* ============================================================
+   ALTA DE TICKET — formulario y resultado tipo recibo
+   ============================================================ */
+.privacy-note {
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin: 1rem 0;
+  gap: 0.7rem;
+  align-items: flex-start;
+  padding: 0.8rem 0.95rem;
+  margin: 0.2rem 0 1.2rem;
+  background: var(--info-soft);
+  border: 1px solid #C9DAF0;
+  border-radius: 12px;
+  color: var(--info);
+  font-size: 0.82rem;
+  line-height: 1.5;
 }
 
-.result-card {
-  max-width: 720px;
-  margin: 1rem 0;
+.privacy-note svg { width: 18px; height: 18px; flex: 0 0 18px; margin-top: 1px; }
+
+.privacy-note code {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  background: rgba(35, 79, 143, 0.10);
+  padding: 0.05rem 0.3rem;
+  border-radius: 4px;
 }
 
-.result-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-  gap: 0.6rem;
-  margin: 0.8rem 0;
-}
-
-.result-item {
-  background: #f8fafc;
-  border-radius: 8px;
-  padding: 0.6rem 0.8rem;
-}
-
-.label {
-  display: block;
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #64748b;
-}
+.result-card { max-width: 760px; margin-top: 0.5rem; }
 
 .resumen {
-  margin: 0.8rem 0 0.4rem;
+  max-width: 34ch;
+  font-size: 0.86rem;
+  color: var(--text-2);
   font-style: italic;
-  color: #334155;
-}
-
-.actions {
-  display: flex;
-  gap: 0.8rem;
-  margin-top: 1rem;
-  flex-wrap: wrap;
+  text-align: right;
+  line-height: 1.5;
 }

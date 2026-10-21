@@ -4,7 +4,8 @@
   <div class="page">
     <div class="page-head">
       <div>
-        <h1>{{ t.codigo }} · {{ t.asunto }}</h1>
+        <span class="eyebrow">Ticket {{ t.codigo }}</span>
+        <h1>{{ t.asunto }}</h1>
       </div>
       <button class="btn btn-outline" [routerLink]="['/bandeja']">← Bandeja</button>
     </div>
@@ -17,123 +18,141 @@
     }
 
     <div class="detail-grid">
-      <div class="card">
-        <h2>Análisis del triaje</h2>
-        <div class="result-grid">
-          <div class="result-item">
-            <span class="label">Categoría</span>
-            <strong>{{ t.categoria }}</strong>
+      <!-- Análisis del triaje -->
+      <article class="receipt perforated">
+        <div class="receipt-head">
+          <div>
+            <span class="receipt-code">Análisis del triaje</span>
+            <h3 class="receipt-title">Clasificación automática</h3>
           </div>
-          <div class="result-item">
-            <span class="label">Severidad</span>
-            <span class="badge" [class]="sevClase(t.severidad)">{{ t.severidad }}</span>
+          <span class="badge" [class]="sevClase(t.severidad)">{{ t.severidad }}</span>
+        </div>
+
+        <div class="receipt-rule"></div>
+
+        <div class="receipt-rows">
+          <div class="receipt-row">
+            <span class="k">Categoría</span>
+            <span class="v">{{ t.categoria || '—' }}</span>
           </div>
-          <div class="result-item">
-            <span class="label">Sentimiento</span>
-            <span class="badge" [class]="sentClase(t.sentimiento)">{{ t.sentimiento }}</span>
+          <div class="receipt-row">
+            <span class="k">Sentimiento</span>
+            <span class="v">
+              <span class="badge" [class]="sentClase(t.sentimiento)">{{ t.sentimiento || '—' }}</span>
+            </span>
           </div>
-          <div class="result-item">
-            <span class="label">Frustración</span>
-            <strong>{{ (t.score_frustracion * 100).toFixed(0) }}%</strong>
+          <div class="receipt-row">
+            <span class="k">Frustración</span>
+            <span class="v">{{ (t.score_frustracion * 100).toFixed(0) }} %</span>
           </div>
-          <div class="result-item">
+          <div class="receipt-row">
+            <span class="k">SLA de atención</span>
+            <span class="v">{{ t.sla_horas }} h</span>
+          </div>
+          <div class="receipt-row">
+            <span class="k">Motor de IA</span>
+            <span class="v">{{ t.proveedor_ia || '—' }}</span>
+          </div>
+        </div>
+
+        <div class="receipt-rule"></div>
+
+        <div class="receipt-foot">
+          <div>
             <span class="label">Prioridad</span>
-            <span class="badge" [class]="prioClase(t.priority_score)">P{{ t.priority_score }}</span>
+            <span class="receipt-amount" [class.prio-alta]="t.priority_score >= 80">{{ t.priority_score }}<small>/100</small></span>
           </div>
-          <div class="result-item">
-            <span class="label">SLA</span>
-            <strong>{{ t.sla_horas }}h</strong>
-          </div>
-        </div>
-
-        @if (t.motivo_reasignacion) {
-          <p class="muted small"><strong>Nota:</strong> {{ t.motivo_reasignacion }}</p>
-        }
-      </div>
-
-      <div class="card">
-        <h2>Descripción</h2>
-        <p class="desc">{{ t.descripcion_original }}</p>
-      </div>
-    </div>
-
-    <div class="card info-card">
-      <h2>Información del ticket</h2>
-      <div class="info-grid">
-        <div class="info-item">
-          <span class="label">Fecha de reporte</span>
-          <strong>{{ t.creado_el | date: 'medium' }}</strong>
-        </div>
-        <div class="info-item">
-          <span class="label">Reportado por</span>
-          <strong>{{ t.cliente_nombre }}</strong>
-        </div>
-        <div class="info-item">
-          <span class="label">Analista</span>
-          <strong>{{ t.analista_nombre || 'Pendiente de asignación' }}</strong>
-        </div>
-        <div class="info-item">
-          <span class="label">Estado del ticket</span>
           <span class="badge estado">{{ estadoTexto(t.estado) }}</span>
         </div>
-        <div class="info-item">
-          <span class="label">Motor de IA</span>
-          <strong>{{ t.proveedor_ia || '—' }}</strong>
-        </div>
-        <div class="info-item">
-          <span class="label">SLA de atención</span>
-          <strong>{{ t.sla_horas }} horas</strong>
-        </div>
-        @if (t.resuelto_el) {
-          <div class="info-item">
-            <span class="label">Resuelto el</span>
-            <strong>{{ t.resuelto_el | date: 'medium' }}</strong>
-          </div>
-        }
+
         @if (t.motivo_reasignacion) {
-          <div class="info-item">
-            <span class="label">Nota de gestión</span>
-            <strong>{{ t.motivo_reasignacion }}</strong>
-          </div>
+          <p class="ticket-note">Nota de gestión: {{ t.motivo_reasignacion }}</p>
         }
+      </article>
+
+      <!-- Descripción y metadatos -->
+      <div class="detail-side">
+        <section class="card">
+          <span class="eyebrow">Descripción</span>
+          <p class="desc">{{ t.descripcion_original }}</p>
+        </section>
+
+        <section class="card">
+          <span class="eyebrow">Ficha del ticket</span>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="label">Reportado el</span>
+              <strong>{{ t.creado_el | date: 'dd/MM/yyyy HH:mm' }}</strong>
+            </div>
+            <div class="info-item">
+              <span class="label">Reportado por</span>
+              <strong>{{ t.cliente_nombre }}</strong>
+            </div>
+            <div class="info-item">
+              <span class="label">Analista</span>
+              <strong>{{ t.analista_nombre || 'Pendiente de asignación' }}</strong>
+            </div>
+            @if (t.resuelto_el) {
+              <div class="info-item">
+                <span class="label">Resuelto el</span>
+                <strong>{{ t.resuelto_el | date: 'dd/MM/yyyy HH:mm' }}</strong>
+              </div>
+            }
+            @if (t.primer_respuesta_el) {
+              <div class="info-item">
+                <span class="label">Primera respuesta</span>
+                <strong>{{ t.primer_respuesta_el | date: 'dd/MM/yyyy HH:mm' }}</strong>
+              </div>
+            }
+            <div class="info-item">
+              <span class="label">Motor de IA</span>
+              <strong>{{ t.proveedor_ia || '—' }}</strong>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
 
     @if (auth.esRol('analista', 'administrador')) {
-      <div class="card actions-card">
-        <h2>Gestión del ticket</h2>
+      <section class="card actions-card">
+        <span class="eyebrow">Gestión del ticket</span>
+        <div class="management-grid">
+          <div>
+            <label>
+              Cambiar estado
+              <select [(ngModel)]="nuevoEstado" name="estado">
+                <option value="nuevo">Nuevo</option>
+                <option value="asignado">Asignado</option>
+                <option value="en_proceso">En proceso</option>
+                <option value="resuelto">Resuelto</option>
+                <option value="cerrado">Cerrado</option>
+                <option value="rechazado">Rechazado</option>
+              </select>
+            </label>
+            <button class="btn btn-primary" (click)="cambiarEstado()">Guardar estado</button>
+          </div>
 
-        <label>
-          Cambiar estado
-          <select [(ngModel)]="nuevoEstado" name="estado">
-            <option value="nuevo">Nuevo</option>
-            <option value="asignado">Asignado</option>
-            <option value="en_proceso">En proceso</option>
-            <option value="resuelto">Resuelto</option>
-            <option value="cerrado">Cerrado</option>
-            <option value="rechazado">Rechazado</option>
-          </select>
-        </label>
-        <button class="btn btn-primary" (click)="cambiarEstado()">Guardar estado</button>
-
-        @if (auth.esRol('administrador')) {
-          <h2 class="mt">Reasignación manual (falsos positivos)</h2>
-          <label>
-            Analista
-            <select [(ngModel)]="analistaSeleccionado" name="analista">
-              <option [ngValue]="0">Selecciona un analista…</option>
-              @for (a of analistas(); track a.id) {
-                <option [ngValue]="a.id">{{ a.nombre }} ({{ a.especialidad || 'General' }})</option>
-              }
-            </select>
-          </label>
-          <label>
-            Motivo
-            <input type="text" [(ngModel)]="motivo" name="motivo" placeholder="Ej: corrección de prioridad detectada" />
-          </label>
-          <button class="btn btn-outline" (click)="reasignar()" [disabled]="!analistaSeleccionado">Reasignar</button>
-        }
-      </div>
+          @if (auth.esRol('administrador')) {
+            <div>
+              <span class="label">Reasignación manual (falsos positivos del modelo)</span>
+              <label>
+                Analista
+                <select [(ngModel)]="analistaSeleccionado" name="analista">
+                  <option [ngValue]="0">Selecciona un analista…</option>
+                  @for (a of analistas(); track a.id) {
+                    <option [ngValue]="a.id">{{ a.nombre }} ({{ a.especialidad || 'General' }})</option>
+                  }
+                </select>
+              </label>
+              <label>
+                Motivo
+                <input type="text" [(ngModel)]="motivo" name="motivo" placeholder="Ej: corrección de prioridad detectada" />
+              </label>
+              <button class="btn btn-outline" (click)="reasignar()" [disabled]="!analistaSeleccionado">Reasignar</button>
+            </div>
+          }
+        </div>
+      </section>
     }
   </div>
 } @else {

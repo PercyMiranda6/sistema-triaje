@@ -1,6 +1,11 @@
 <div class="page">
-  <h1>Registrar ticket de soporte</h1>
-  <p class="muted">Describe tu problema en tus propias palabras. El sistema lo analizará con IA para clasificarlo, medir la urgencia y tu nivel de frustración.</p>
+  <div class="page-head">
+    <div>
+      <span class="eyebrow">Nuevo registro</span>
+      <h1>Registrar ticket de soporte</h1>
+      <p>Describe el problema con tus propias palabras. El sistema anonimiza tus datos personales, envía el texto al modelo de lenguaje y devuelve la clasificación, la severidad y tu nivel de frustración.</p>
+    </div>
+  </div>
 
   @if (error(); as err) {
     <div class="alert alert-error">{{ err }}</div>
@@ -15,65 +20,83 @@
 
       <label>
         Descripción detallada
-        <textarea name="descripcion" [(ngModel)]="descripcion" required rows="6" placeholder="Cuenta qué ocurre, desde cuándo y qué has intentado. (Los datos personales como DNI, correos o contraseñas se enmascaran automáticamente antes del análisis con IA)"></textarea>
+        <textarea name="descripcion" [(ngModel)]="descripcion" required rows="7"
+          placeholder="Cuenta qué ocurre, desde cuándo y qué has intentado. Los datos personales (DNI, correos, teléfonos o contraseñas) se enmascaran automáticamente antes del análisis con IA."></textarea>
       </label>
 
-      <button class="btn btn-primary" type="submit" [disabled]="enviando()">
-        {{ enviando() ? 'Analizando con IA...' : 'Enviar y analizar' }}
+      <div class="privacy-note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3 5 6v5.5c0 4.2 2.9 8.1 7 9.5 4.1-1.4 7-5.3 7-9.5V6l-7-3Z" />
+          <path d="M9.5 12.2 11.4 14l3.4-3.6" />
+        </svg>
+        <span>Los datos personales se reemplazan por etiquetas (<code>[DNI]</code>, <code>[EMAIL]</code>, <code>[CREDENCIAL]</code>, <code>[NOMBRE]</code>) antes de cualquier llamada a un servicio externo, conforme a la Ley N.° 29733.</span>
+      </div>
+
+      <button class="btn btn-accent" type="submit" [disabled]="enviando()">
+        {{ enviando() ? 'Analizando con IA…' : 'Enviar y analizar' }}
       </button>
     </form>
   }
 
   @if (resultado(); as r) {
-    <div class="card result-card">
-      <h2>Ticket {{ r.codigo }} creado ✅</h2>
+    <article class="receipt perforated result-card">
+      <div class="receipt-head">
+        <div>
+          <span class="receipt-code">Ticket {{ r.codigo }} · creado</span>
+          <h3 class="receipt-title">El modelo de lenguaje ya clasificó tu solicitud</h3>
+        </div>
+        <span class="badge" [class]="sevClase(r.severidad)">{{ r.severidad }}</span>
+      </div>
 
-      <div class="result-grid">
-        <div class="result-item">
-          <span class="label">Categoría</span>
-          <strong>{{ r.categoria }}</strong>
+      <div class="receipt-rule"></div>
+
+      <div class="receipt-rows">
+        <div class="receipt-row">
+          <span class="k">Categoría</span>
+          <span class="v">{{ r.categoria }}</span>
         </div>
-        <div class="result-item">
-          <span class="label">Severidad</span>
-          <span class="badge" [class]="sevClase(r.severidad)">{{ r.severidad }}</span>
+        <div class="receipt-row">
+          <span class="k">Sentimiento</span>
+          <span class="v">
+            <span class="badge" [class]="sentClase(r.sentimiento)">{{ r.sentimiento }}</span>
+          </span>
         </div>
-        <div class="result-item">
-          <span class="label">Sentimiento</span>
-          <span class="badge" [class]="sentClase(r.sentimiento)">{{ r.sentimiento }}</span>
+        <div class="receipt-row">
+          <span class="k">Frustración</span>
+          <span class="v">{{ (r.score_frustracion * 100).toFixed(0) }} %</span>
         </div>
-        <div class="result-item">
-          <span class="label">Frustración</span>
-          <strong>{{ (r.score_frustracion * 100).toFixed(0) }}%</strong>
+        <div class="receipt-row">
+          <span class="k">SLA</span>
+          <span class="v">{{ r.sla_horas }} h</span>
         </div>
-        <div class="result-item">
-          <span class="label">Prioridad (0-100)</span>
-          <strong>{{ r.priority_score }}</strong>
+        <div class="receipt-row">
+          <span class="k">Analista asignado</span>
+          <span class="v">{{ r.analista_asignado?.nombre || 'Pendiente de asignación' }}</span>
         </div>
-        <div class="result-item">
-          <span class="label">SLA</span>
-          <strong>{{ r.sla_horas }}h</strong>
+        <div class="receipt-row">
+          <span class="k">Motor de IA</span>
+          <span class="v">{{ r.proveedor_ia }}</span>
         </div>
-        <div class="result-item">
-          <span class="label">Analista asignado</span>
-          <strong>{{ r.analista_asignado?.nombre || 'Pendiente de asignación' }}</strong>
-        </div>
-        <div class="result-item">
-          <span class="label">Motor IA</span>
-          <strong>{{ r.proveedor_ia }}</strong>
+        <div class="receipt-row">
+          <span class="k">Tiempo de análisis</span>
+          <span class="v">{{ r.latencia_ms }} ms</span>
         </div>
       </div>
 
-      @if (r.resumen_ejecutivo) {
-        <p class="resumen"><strong>Resumen:</strong> {{ r.resumen_ejecutivo }}</p>
-      }
-      @if (r.latencia_ms) {
-        <p class="muted small">Procesado en {{ r.latencia_ms }} ms</p>
-      }
+      <div class="receipt-rule"></div>
 
-      <div class="actions">
-        <button class="btn btn-outline" (click)="resultado.set(null)">Crear otro ticket</button>
-        <button class="btn btn-primary" (click)="router.navigate(['/bandeja'])">Ir a la bandeja</button>
+      <div class="receipt-foot">
+        <div>
+          <span class="label">Prioridad</span>
+          <span class="receipt-amount">{{ r.priority_score }}<small>/100</small></span>
+        </div>
+        <p class="resumen">{{ r.resumen_ejecutivo }}</p>
       </div>
+    </article>
+
+    <div class="actions">
+      <button class="btn btn-outline" (click)="resultado.set(null)">Crear otro ticket</button>
+      <button class="btn btn-primary" (click)="router.navigate(['/bandeja'])">Ir a la bandeja</button>
     </div>
   }
 </div>

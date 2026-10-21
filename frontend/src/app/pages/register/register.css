@@ -1,1 +1,13 @@
-/* register uses global auth styles — same as login.css */
+/* ============================================================
+   REGISTRO
+   ============================================================ */
+.auth-card-single {
+  width: 100%;
+  max-width: 440px;
+  text-align: left;
+}
+
+.auth-card-single .auth-mark { margin-bottom: 1.1rem; }
+.auth-card-single h2 { margin-bottom: 0.3rem; }
+.auth-card-single .muted { margin-bottom: 1.4rem; }
+.auth-card-single label { text-align: left; }

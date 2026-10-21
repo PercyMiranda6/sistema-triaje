@@ -1,6 +1,11 @@
 <div class="page">
-  <h1>Gestión de analistas</h1>
-  <p class="muted">Agrega especialistas para el enrutamiento inteligente por categoría.</p>
+  <div class="page-head">
+    <div>
+      <span class="eyebrow">Enrutamiento inteligente</span>
+      <h1>Gestión de analistas</h1>
+      <p>Registra especialistas y define su especialidad técnica: es el criterio que usa el motor de triaje para enrutar cada ticket automáticamente.</p>
+    </div>
+  </div>
 
   @if (mensaje()) {
     <div class="alert alert-success">{{ mensaje() }}</div>
@@ -10,7 +15,8 @@
   }
 
   <div class="admin-grid">
-    <div class="card">
+    <section class="card">
+      <span class="eyebrow">Alta de especialista</span>
       <h2>Nuevo analista</h2>
       <form class="form-stack" (ngSubmit)="crear()">
         <label>
@@ -36,11 +42,12 @@
             <option value="Base de Datos">Base de Datos</option>
           </select>
         </label>
-        <button class="btn btn-primary" type="submit">Crear analista</button>
+        <button class="btn btn-accent" type="submit">Crear analista</button>
       </form>
-    </div>
+    </section>
 
-    <div class="card">
+    <section class="card">
+      <span class="eyebrow">Planta de soporte</span>
       <h2>Analistas registrados</h2>
       @if (cargando()) {
         <p class="muted">Cargando…</p>
@@ -49,7 +56,7 @@
           <table>
             <thead>
               <tr>
-                <th>Nombre</th>
+                <th>Analista</th>
                 <th>Especialidad</th>
                 <th>Carga activa</th>
               </tr>
@@ -58,14 +65,20 @@
               @for (a of analistas(); track a.id) {
                 <tr>
                   <td>{{ a.nombre }}</td>
-                  <td>{{ a.especialidad || 'General' }}</td>
-                  <td>{{ a.carga_activa ?? 0 }} tickets</td>
+                  <td><span class="badge badge-neutro">{{ a.especialidad || 'General' }}</span></td>
+                  <td>
+                    @if ((a.carga_activa ?? 0) >= 5) {
+                      <span class="badge badge-critica">Saturado</span>
+                    } @else {
+                      <span class="mono">{{ a.carga_activa ?? 0 }} / 5</span>
+                    }
+                  </td>
                 </tr>
               }
             </tbody>
           </table>
         </div>
       }
-    </div>
+    </section>
   </div>
 </div>
