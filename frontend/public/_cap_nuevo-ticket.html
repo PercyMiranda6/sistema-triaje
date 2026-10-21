@@ -1,0 +1,12 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>sesion</title></head>
+<body style="font-family:Arial;background:#0f172a;color:#fff;padding:40px">
+<h3>Preparando captura: nuevo-ticket (cliente)</h3>
+<script>
+try {
+  localStorage.setItem('token', "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sIjoiY2xpZW50ZSIsIm5vbWJyZSI6Ikp1YW4gUMOpcmV6IiwiZW1haWwiOiJqdWFuLnBlcmV6QGVtcHJlc2EuY29tIiwiaWF0IjoxNzkyNjEzMDA0LCJleHAiOjE3OTI2NDE4MDR9.0OVyTitlEGQXLBYQ3zesL4uq262niLzIVjpOKWQpYzY");
+  localStorage.setItem('usuario', {"id": 2, "nombre": "Juan Pérez", "email": "juan.perez@empresa.com", "rol": "cliente", "especialidad": null});
+  location.replace('/nuevo-ticket');
+} catch (e) { document.body.innerHTML += '<pre>' + e + '</pre>'; }
+</script>
+</body></html>

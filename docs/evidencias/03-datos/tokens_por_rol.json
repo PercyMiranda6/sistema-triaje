@@ -1,0 +1,35 @@
+﻿{
+    "admin":  {
+                  "mensaje":  "Inicio de sesión exitoso.",
+                  "token":  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sIjoiYWRtaW5pc3RyYWRvciIsIm5vbWJyZSI6IkFkbWluaXN0cmFkb3IgZGVsIFNpc3RlbWEiLCJlbWFpbCI6ImFkbWluQHRyaWFqZS5jb20iLCJpYXQiOjE3OTI2MTMwMDQsImV4cCI6MTc5MjY0MTgwNH0.HRTMBq4v-DhVntVCeTcTSFZwwIs3uvGwKK0PjUEv8e4",
+                  "usuario":  {
+                                  "id":  1,
+                                  "nombre":  "Administrador del Sistema",
+                                  "email":  "admin@triaje.com",
+                                  "rol":  "administrador",
+                                  "especialidad":  null
+                              }
+              },
+    "analista":  {
+                     "mensaje":  "Inicio de sesión exitoso.",
+                     "token":  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sIjoiYW5hbGlzdGEiLCJub21icmUiOiJBbmEgVG9ycmVzIiwiZW1haWwiOiJhbmEudG9ycmVzQGVtcHJlc2EuY29tIiwiaWF0IjoxNzkyNjEzMDA0LCJleHAiOjE3OTI2NDE4MDR9.pTRbOgQno2zfMyDEUwNPrPvDPH607qatysbhXAJKitc",
+                     "usuario":  {
+                                     "id":  3,
+                                     "nombre":  "Ana Torres",
+                                     "email":  "ana.torres@empresa.com",
+                                     "rol":  "analista",
+                                     "especialidad":  "Hardware"
+                                 }
+                 },
+    "cliente":  {
+                    "mensaje":  "Inicio de sesión exitoso.",
+                    "token":  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sIjoiY2xpZW50ZSIsIm5vbWJyZSI6Ikp1YW4gUMOpcmV6IiwiZW1haWwiOiJqdWFuLnBlcmV6QGVtcHJlc2EuY29tIiwiaWF0IjoxNzkyNjEzMDA0LCJleHAiOjE3OTI2NDE4MDR9.0OVyTitlEGQXLBYQ3zesL4uq262niLzIVjpOKWQpYzY",
+                    "usuario":  {
+                                    "id":  2,
+                                    "nombre":  "Juan Pérez",
+                                    "email":  "juan.perez@empresa.com",
+                                    "rol":  "cliente",
+                                    "especialidad":  null
+                                }
+                }
+}

@@ -1,0 +1,12 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>sesion</title></head>
+<body style="font-family:Arial;background:#0f172a;color:#fff;padding:40px">
+<h3>Preparando captura: analistas (admin)</h3>
+<script>
+try {
+  localStorage.setItem('token', "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sIjoiYWRtaW5pc3RyYWRvciIsIm5vbWJyZSI6IkFkbWluaXN0cmFkb3IgZGVsIFNpc3RlbWEiLCJlbWFpbCI6ImFkbWluQHRyaWFqZS5jb20iLCJpYXQiOjE3OTI2MTMwMDQsImV4cCI6MTc5MjY0MTgwNH0.HRTMBq4v-DhVntVCeTcTSFZwwIs3uvGwKK0PjUEv8e4");
+  localStorage.setItem('usuario', {"id": 1, "nombre": "Administrador del Sistema", "email": "admin@triaje.com", "rol": "administrador", "especialidad": null});
+  location.replace('/analistas');
+} catch (e) { document.body.innerHTML += '<pre>' + e + '</pre>'; }
+</script>
+</body></html>

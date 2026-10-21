@@ -1,0 +1,31 @@
+
+=== E2E Sistema de Triaje ===
+
+  ✅ Registro de cliente
+  ✅ Login administrador
+  ✅ Login analista
+  ✅ Crear ticket con triaje automático
+  ✅ Categoría detectada (Hardware)
+  ✅ Sentimiento Frustrado
+  ✅ Priority score en rango 0-100
+  ✅ SLA asignado
+  ✅ Analista asignado automáticamente
+  ✅ PII: DNI enmascarado
+  ✅ PII: email enmascarado
+  ✅ PII: credencial enmascarada
+  ✅ PII: nombre enmascarado
+  ✅ Analista inicia proceso
+  ✅ Analista resuelve ticket
+  ✅ Reasignación manual admin
+  ✅ Cliente ve solo sus tickets
+  ✅ Listado filtrado por estado
+  ✅ Sin token -> 401
+  ✅ Token válido -> ticket creado
+  ✅ Dashboard resumen admin
+  ✅ Dashboard analista permitido
+  ✅ Dashboard denegado a cliente (403)
+  ✅ Export CSV admin
+  ✅ Lista de analistas
+
+=== Resultado: 25 OK, 0 FAIL ===
+

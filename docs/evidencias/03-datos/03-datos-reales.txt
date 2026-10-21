@@ -1,0 +1,151 @@
++------------------------------+
+| bloque                       |
++------------------------------+
+| === 1. TOTALES GENERALES === |
++------------------------------+
++---------------+--------+-----------+------------+-----------+----------+
+| total_tickets | nuevos | asignados | en_proceso | resueltos | cerrados |
++---------------+--------+-----------+------------+-----------+----------+
+|            16 |      0 |        12 |          0 |         4 |        0 |
++---------------+--------+-----------+------------+-----------+----------+
++------------------------------------------------------------+
+| bloque                                                     |
++------------------------------------------------------------+
+| === 2. DISTRIBUCION POR CATEGORIA (variable de triaje) === |
++------------------------------------------------------------+
++-----------+---------+-------------------+
+| categoria | tickets | priority_promedio |
++-----------+---------+-------------------+
+| Hardware  |       7 |              77.0 |
+| Software  |       4 |              20.5 |
+| Redes     |       4 |              71.3 |
+| Accesos   |       1 |              82.0 |
++-----------+---------+-------------------+
++---------------------------------------+
+| bloque                                |
++---------------------------------------+
+| === 3. DISTRIBUCION POR SEVERIDAD === |
++---------------------------------------+
++-----------+---------+-------------------+
+| severidad | tickets | priority_promedio |
++-----------+---------+-------------------+
+| Critica   |       1 |              96.0 |
+| Alta      |       9 |              80.7 |
+| Baja      |       6 |              27.7 |
++-----------+---------+-------------------+
++-------------------------------------------------------------------+
+| bloque                                                            |
++-------------------------------------------------------------------+
+| === 4. DISTRIBUCION POR SENTIMIENTO (analisis de sentimiento) === |
++-------------------------------------------------------------------+
++-------------+---------+-------------------------+
+| sentimiento | tickets | score_fraccion_promedio |
++-------------+---------+-------------------------+
+| Frustrado   |      10 |                    0.93 |
+| Neutro      |       6 |                    0.26 |
++-------------+---------+-------------------------+
++-------------------------------------------------+
+| bloque                                          |
++-------------------------------------------------+
+| === 5. PROVEEDOR DE IA UTILIZADO POR TICKET === |
++-------------------------------------------------+
++----------------+------------+----------------------+--------------------+
+| proveedor      | triangulos | latencia_promedio_ms | latencia_maxima_ms |
++----------------+------------+----------------------+--------------------+
+| groq           |          9 |                 1612 |               4662 |
+| fallback_local |          7 |                  113 |                516 |
++----------------+------------+----------------------+--------------------+
++---------------------------------------------------+
+| bloque                                            |
++---------------------------------------------------+
+| === 6. LATENCIA DEL TRIAJE (RNF01 <= 3000 ms) === |
++---------------------------------------------------+
++----------+--------+-------------+--------+-----------------+------------------------+
+| muestras | min_ms | promedio_ms | max_ms | dentro_de_rnf01 | pct_cumplimiento_rnf01 |
++----------+--------+-------------+--------+-----------------+------------------------+
+|        9 |    853 |        1612 |   4662 |               8 |                   88.9 |
++----------+--------+-------------+--------+-----------------+------------------------+
++-------------------------------------------------------------------+
+| bloque                                                            |
++-------------------------------------------------------------------+
+| === 7. PRIORIDAD: tickets ordenados por score (cola dinamica) === |
++-------------------------------------------------------------------+
++------------+-----------+-----------+-------------+----------------+----------+-------------------+---------------+
+| codigo     | categoria | severidad | sentimiento | priority_score | estado   | cliente           | analista      |
++------------+-----------+-----------+-------------+----------------+----------+-------------------+---------------+
+| TKT-FMASZM | Redes     | Critica   | Frustrado   |             96 | asignado | Juan Pérez        | María Gómez   |
+| TKT-8XYS9M | Hardware  | Alta      | Frustrado   |             85 | asignado | Prueba Groq       | Ana Torres    |
+| TKT-X7B7QY | Hardware  | Alta      | Frustrado   |             85 | asignado | Prueba Groq       | María Gómez   |
+| TKT-D5EVAW | Accesos   | Alta      | Frustrado   |             82 | asignado | Juan Pérez        | María Gómez   |
+| TKT-NCWHMG | Hardware  | Alta      | Frustrado   |             81 | resuelto | Cliente E2E       | Ana Torres    |
+| TKT-LLZCRP | Hardware  | Alta      | Frustrado   |             81 | resuelto | Cliente E2E       | Ana Torres    |
+| TKT-OVIN9B | Hardware  | Alta      | Frustrado   |             81 | resuelto | Cliente E2E       | Ana Torres    |
+| TKT-YYH7XH | Redes     | Alta      | Frustrado   |             81 | asignado | Prueba Groq       | María Gómez   |
+| TKT-6WVFPA | Redes     | Alta      | Frustrado   |             79 | asignado | Usuario Evidencia | María Gómez   |
+| TKT-U5NMBE | Hardware  | Alta      | Neutro      |             71 | resuelto | Juan Pérez        | Ana Torres    |
+| TKT-YRY4-4 | Hardware  | Baja      | Frustrado   |             55 | asignado | Cliente E2E       | Carlos Ruiz   |
+| TKT-FCQGN8 | Redes     | Baja      | Neutro      |             29 | asignado | Juan Pérez        | María Gómez   |
++------------+-----------+-----------+-------------+----------------+----------+-------------------+---------------+
++------------------------------------------------------+
+| bloque                                               |
++------------------------------------------------------+
+| === 8. EVIDENCIA DE ANONIMIZACION (Ley N. 29733) === |
++------------------------------------------------------+
++--------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------+----------------+---------------------+-----------------------------+
+| log_id | texto_enviado_a_la_nube                                                                                                                                                                                                                                                     | contiene_dni | contiene_email | contiene_credencial | contiene_nombre_enmascarado |
++--------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------+----------------+---------------------+-----------------------------+
+|     16 | x. y                                                                                                                                                                                                                                                                        |            0 |              0 |                   0 |                           0 |
+|     15 | Impresora sin funcionar. Buenos días, me llamo [NOMBRE] [NOMBRE] [NOMBRE] [DNI], correo [EMAIL] y [CREDENCIAL] La impresora no imprime nada y estoy muuuuy frustrado!!! llevo horas esperando!!                                                                             |            0 |              0 |                   0 |                           1 |
+|     14 | La VPN no conecta desde el lunes. Buenos dias, soy [NOMBRE] [NOMBRE] mi DNI es [DNI], correo [EMAIL] y mi [CREDENCIAL] Desde el lunes la VPN no conecta en mi laptop y no puedo trabajar con los reportes, me tiene harto, esto ya me hace un dia entero, nadie responde!!! |            0 |              0 |                   0 |                           1 |
+|     13 | x. y                                                                                                                                                                                                                                                                        |            0 |              0 |                   0 |                           0 |
+|     12 | Impresora sin funcionar. Buenos días, me llamo [NOMBRE] [NOMBRE] [NOMBRE] [DNI], correo [EMAIL] y [CREDENCIAL] La impresora no imprime nada y estoy muuuuy frustrado!!! llevo horas esperando!!                                                                             |            0 |              0 |                   0 |                           1 |
++--------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------+----------------+---------------------+-----------------------------+
++----------------------------------+
+| bloque                           |
++----------------------------------+
+| === 9. BITACORA DE AUDITORIA === |
++----------------------------------+
++----+------------+-------------------+---------------------------------------------------------+---------------------+
+| id | usuario_id | accion            | detalle                                                 | creado_el           |
++----+------------+-------------------+---------------------------------------------------------+---------------------+
+| 31 |         92 | crear_ticket      | Ticket TKT-NOS3QH creado y analizado con groq en 987ms  | 2026-10-21 15:07:26 |
+| 30 |          1 | reasignar_ticket  | Ticket #11 reasignado a María Gómez                     | 2026-10-21 15:07:25 |
+| 29 |          3 | actualizar_estado | Ticket #15 de en_proceso a resuelto                     | 2026-10-21 15:07:25 |
+| 28 |          3 | actualizar_estado | Ticket #15 de asignado a en_proceso                     | 2026-10-21 15:07:25 |
+| 27 |         92 | crear_ticket      | Ticket TKT-NCWHMG creado y analizado con groq en 853ms  | 2026-10-21 15:07:25 |
+| 26 |         91 | crear_ticket      | Ticket TKT-6WVFPA creado y analizado con groq en 998ms  | 2026-10-21 15:07:23 |
+| 25 |         83 | crear_ticket      | Ticket TKT-D0LRH9 creado y analizado con groq en 1265ms | 2026-10-21 15:06:21 |
+| 24 |          1 | reasignar_ticket  | Ticket #11 reasignado a María Gómez                     | 2026-10-21 15:06:19 |
+| 23 |          3 | actualizar_estado | Ticket #12 de en_proceso a resuelto                     | 2026-10-21 15:06:19 |
+| 22 |          3 | actualizar_estado | Ticket #12 de asignado a en_proceso                     | 2026-10-21 15:06:19 |
+| 21 |         83 | crear_ticket      | Ticket TKT-LLZCRP creado y analizado con groq en 1201ms | 2026-10-21 15:06:19 |
+| 20 |          2 | crear_ticket      | Ticket TKT-FMASZM creado y analizado con groq en 4662ms | 2026-10-21 15:04:59 |
++----+------------+-------------------+---------------------------------------------------------+---------------------+
++----------------------------------------------------------------------+
+| bloque                                                               |
++----------------------------------------------------------------------+
+| === 10. CARGA DE TRABAJO POR ANALISTA (enrutamiento inteligente) === |
++----------------------------------------------------------------------+
++-----------------+---------------+-------------------+--------------+
+| nombre          | especialidad  | tickets_asignados | carga_activa |
++-----------------+---------------+-------------------+--------------+
+| María Gómez     | Redes         |                 6 |            6 |
+| Carlos Ruiz     | Software      |                 5 |            5 |
+| Ana Torres      | Hardware      |                 5 |            1 |
+| Luis Fernández  | Accesos       |                 0 |         NULL |
+| Rosa Mendoza    | Base de Datos |                 0 |         NULL |
++-----------------+---------------+-------------------+--------------+
++-------------------------------------------------+
+| bloque                                          |
++-------------------------------------------------+
+| === 11. SLA: TIEMPO OBJETIVO VS TIEMPO REAL === |
++-------------------------------------------------+
++------------+-----------+--------------------+-----------------+---------------+
+| codigo     | severidad | sla_objetivo_horas | tiempo_real_min | cumplimiento  |
++------------+-----------+--------------------+-----------------+---------------+
+| TKT-NCWHMG | Alta      |                  4 |               0 | DENTRO DE SLA |
+| TKT-LLZCRP | Alta      |                  4 |               0 | DENTRO DE SLA |
+| TKT-OVIN9B | Alta      |                  4 |               0 | DENTRO DE SLA |
+| TKT-YRY4-4 | Baja      |                 24 |               0 | DENTRO DE SLA |
+| TKT-U5NMBE | Alta      |                  4 |              36 | DENTRO DE SLA |
++------------+-----------+--------------------+-----------------+---------------+

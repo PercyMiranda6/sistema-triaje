@@ -1,0 +1,38 @@
+<div class="auth-wrap">
+  <form class="card auth-card" (ngSubmit)="enviar()">
+    <div class="auth-header">
+      <span class="auth-logo">⬡</span>
+      <h1>Triaje TI</h1>
+      <p>Sistema Inteligente de Soporte con PLN</p>
+    </div>
+
+    @if (error(); as err) {
+      <div class="alert alert-error">{{ err }}</div>
+    }
+
+    <label>
+      Correo electrónico
+      <input type="email" name="email" [(ngModel)]="email" required autocomplete="email" placeholder="usuario@empresa.com" />
+    </label>
+
+    <label>
+      Contraseña
+      <input type="password" name="password" [(ngModel)]="password" required autocomplete="current-password" placeholder="••••••••" />
+    </label>
+
+    <button class="btn btn-primary btn-block" type="submit">Iniciar sesión</button>
+
+    <p class="text-center muted">
+      ¿No tienes cuenta? <a routerLink="/registro">Regístrate</a>
+    </p>
+
+    <div class="auth-hint">
+      <strong>Cuentas demo:</strong>
+      <ul>
+        <li>Cliente: juan.perez@empresa.com / Cliente123!</li>
+        <li>Analista: ana.torres@empresa.com / Analista123!</li>
+        <li>Admin: admin@triaje.com / Admin123!</li>
+      </ul>
+    </div>
+  </form>
+</div>

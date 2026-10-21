@@ -1,0 +1,25 @@
+◇ injected env (15) from .env
+modelo | caso | proveedor | latencia_ms | categoria | severidad | sentimiento | score | priority
+------------------------------------------------------------------------------------------------
+openai/gpt-oss-20b | VPN no conecta (frustrado, PII) | groq | 1165 | Redes | Alta | Frustrado | 0.9 | 81
+openai/gpt-oss-20b | Impresora sin funcionar (hardware) | groq | 1324 | Hardware | Alta | Neutro | 0.3 | 57
+openai/gpt-oss-20b | Consulta de reporte (neutro, baja) | groq | 803 | Software | Baja | Positivo | 0.1 | 19
+openai/gpt-oss-20b | Error critico de produccion (critica) | groq | 1056 | Software | Critica | Frustrado | 0.9 | 96
+openai/gpt-oss-20b | No puedo acceder a mi cuenta | groq | 825 | Accesos | Alta | Frustrado | 0.8 | 77
+
+openai/gpt-oss-120b | VPN no conecta (frustrado, PII) | groq | 1410 | Redes | Alta | Frustrado | 0.9 | 81
+openai/gpt-oss-120b | Impresora sin funcionar (hardware) | groq | 1401 | Hardware | Media | Frustrado | 0.8 | 62
+openai/gpt-oss-120b | Consulta de reporte (neutro, baja) | groq | 1666 | Software | Baja | Positivo | 0.1 | 19
+openai/gpt-oss-120b | Error critico de produccion (critica) | groq | 1201 | Software | Critica | Frustrado | 0.9 | 96
+openai/gpt-oss-120b | No puedo acceder a mi cuenta | groq | 2225 | Accesos | Alta | Frustrado | 0.85 | 79
+
+qwen/qwen3.8-27b | VPN no conecta (frustrado, PII) | groq | 487 | Redes | Alta | Frustrado | 0.9 | 81
+qwen/qwen3.8-27b | Impresora sin funcionar (hardware) | groq | 478 | Hardware | Media | Neutro | 0.2 | 38
+qwen/qwen3.8-27b | Consulta de reporte (neutro, baja) | groq | 1550 | Software | Baja | Neutro | 0.1 | 19
+qwen/qwen3.8-27b | Error critico de produccion (critica) | groq | 613 | Software | Critica | Frustrado | 0.95 | 98
+qwen/qwen3.8-27b | No puedo acceder a mi cuenta | groq | 471 | Accesos | Alta | Frustrado | 0.8 | 77
+
+=== RESUMEN DE LATENCIA (ms) ===
+openai/gpt-oss-20b: min=803 avg=1035 p95=1324 max=1324 | llamadas LLM exitosas: 5/5 | cumple RNF01 (<=3000ms p95): SI
+openai/gpt-oss-120b: min=1201 avg=1581 p95=2225 max=2225 | llamadas LLM exitosas: 5/5 | cumple RNF01 (<=3000ms p95): SI
+qwen/qwen3.8-27b: min=471 avg=720 p95=1550 max=1550 | llamadas LLM exitosas: 5/5 | cumple RNF01 (<=3000ms p95): SI

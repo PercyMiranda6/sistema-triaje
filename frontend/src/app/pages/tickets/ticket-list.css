@@ -1,0 +1,91 @@
+.page-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.filters {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.filters label {
+  margin-bottom: 0;
+}
+
+.ticket-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.ticket-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.15s;
+  border-left: 6px solid #94a3b8;
+}
+
+.ticket-row:hover {
+  transform: translateX(2px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.ticket-critica { border-left-color: #dc2626; }
+.ticket-alta { border-left-color: #f97316; }
+.ticket-media { border-left-color: #eab308; }
+.ticket-baja { border-left-color: #22c55e; }
+
+.ticket-code {
+  font-weight: 700;
+  color: #2563eb;
+  font-size: 0.85rem;
+}
+
+.ticket-asunto {
+  font-weight: 600;
+  margin: 0.1rem 0;
+}
+
+.ticket-meta {
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+.ticket-right {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.estado {
+  background: #334155;
+  color: #fff;
+  text-transform: capitalize;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.empty {
+  color: #64748b;
+  text-align: center;
+  padding: 2rem;
+}

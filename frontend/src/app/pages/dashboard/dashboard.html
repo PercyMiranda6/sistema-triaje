@@ -1,0 +1,93 @@
+<div class="page">
+  <div class="page-head">
+    <div>
+      <h1>Dashboard analítico</h1>
+      <p class="muted">Indicadores en tiempo real: FRT, MTTR, estado de tickets y cumplimiento de SLA.</p>
+    </div>
+    <button class="btn btn-outline" (click)="exportar()">Exportar CSV</button>
+  </div>
+
+  @if (error()) {
+    <div class="alert alert-error">{{ error() }}</div>
+  }
+
+  @if (cargando()) {
+    <p class="muted">Cargando métricas…</p>
+  } @else if (datos(); as d) {
+    <div class="kpi-grid">
+      <div class="card kpi">
+        <span class="label">Tickets totales</span>
+        <strong>{{ d.totales.total }}</strong>
+      </div>
+      <div class="card kpi">
+        <span class="label">Abiertos</span>
+        <strong>{{ d.totales.abiertos }}</strong>
+      </div>
+      <div class="card kpi">
+        <span class="label">Resueltos</span>
+        <strong>{{ d.totales.resueltos }}</strong>
+      </div>
+      <div class="card kpi">
+        <span class="label">Críticos abiertos</span>
+        <strong class="text-danger">{{ d.totales.criticos_abiertos }}</strong>
+      </div>
+      <div class="card kpi">
+        <span class="label">FRT (primera respuesta)</span>
+        <strong>{{ d.frt_minutos }} min</strong>
+      </div>
+      <div class="card kpi">
+        <span class="label">MTTR (resolución)</span>
+        <strong>{{ d.mttr }} min</strong>
+      </div>
+      <div class="card kpi">
+        <span class="label">Cumplimiento SLA</span>
+        <strong>{{ d.sla.pct_cumplimiento ?? '—' }}%</strong>
+      </div>
+    </div>
+
+    <div class="charts-grid">
+      <div class="card chart-card">
+        <h3>Estado de tickets</h3>
+        <div class="chart-box"><canvas #canvasEstado></canvas></div>
+      </div>
+      <div class="card chart-card">
+        <h3>Severidad</h3>
+        <div class="chart-box"><canvas #canvasSeveridad></canvas></div>
+      </div>
+      <div class="card chart-card">
+        <h3>Categoría técnica</h3>
+        <div class="chart-box"><canvas #canvasCategoria></canvas></div>
+      </div>
+      <div class="card chart-card">
+        <h3>Tickets por día (7 días)</h3>
+        <div class="chart-box"><canvas #canvasPorDia></canvas></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Rendimiento de analistas</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Analista</th>
+              <th>Especialidad</th>
+              <th>Asignados</th>
+              <th>Resueltos</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (a of d.analistas; track a.nombre) {
+              <tr>
+                <td>{{ a.nombre }}</td>
+                <td>{{ a.especialidad || 'General' }}</td>
+                <td>{{ a.asignados }}</td>
+                <td>{{ a.resueltos || 0 }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+</div>

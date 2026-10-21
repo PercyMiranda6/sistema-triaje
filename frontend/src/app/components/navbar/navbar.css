@@ -1,0 +1,136 @@
+.tabbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 1.25rem;
+  background: #fff;
+  border-bottom: 2px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.tabbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 1rem;
+  white-space: nowrap;
+}
+
+.tabbar-brand .logo {
+  color: #2563eb;
+  font-size: 1.2rem;
+}
+
+.tabs {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.15rem;
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tabs a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1rem;
+  text-decoration: none;
+  color: #475569;
+  font-weight: 600;
+  font-size: 0.88rem;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.tabs a:hover {
+  color: #2563eb;
+  background: #f1f5f9;
+}
+
+.tabs a.active {
+  color: #1d4ed8;
+  border-bottom-color: #2563eb;
+  background: #eff6ff;
+}
+
+.tab-icon {
+  font-size: 0.95rem;
+}
+
+.tabbar-user {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  white-space: nowrap;
+}
+
+.rol-chip {
+  background: #eef2ff;
+  color: #4338ca;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+}
+
+.user-name {
+  font-size: 0.86rem;
+  color: #334155;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btn-logout {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.45rem 0.85rem;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: background 0.15s;
+}
+
+.btn-logout:hover {
+  background: #fee2e2;
+}
+
+@media (max-width: 720px) {
+  .tabbar {
+    flex-wrap: wrap;
+    padding: 0.5rem 0.75rem;
+  }
+  .tabbar-brand {
+    width: 100%;
+  }
+  .tabbar-user {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  .tabs {
+    order: 3;
+    width: 100%;
+  }
+  .user-name {
+    display: none;
+  }
+}

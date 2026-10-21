@@ -1,0 +1,34 @@
+<div class="auth-wrap">
+  <form class="card auth-card" (ngSubmit)="enviar()">
+    <div class="auth-header">
+      <span class="auth-logo">⬡</span>
+      <h1>Crear cuenta</h1>
+      <p>Regístrate como cliente de soporte TI</p>
+    </div>
+
+    @if (error(); as err) {
+      <div class="alert alert-error">{{ err }}</div>
+    }
+
+    <label>
+      Nombre completo
+      <input type="text" name="nombre" [(ngModel)]="nombre" required placeholder="Juan Pérez" />
+    </label>
+
+    <label>
+      Correo electrónico
+      <input type="email" name="email" [(ngModel)]="email" required placeholder="usuario@empresa.com" />
+    </label>
+
+    <label>
+      Contraseña
+      <input type="password" name="password" [(ngModel)]="password" required minlength="6" placeholder="Mínimo 6 caracteres" />
+    </label>
+
+    <button class="btn btn-primary btn-block" type="submit">Registrarme</button>
+
+    <p class="text-center muted">
+      <a [routerLink]="['/login']">← Volver al inicio de sesión</a>
+    </p>
+  </form>
+</div>

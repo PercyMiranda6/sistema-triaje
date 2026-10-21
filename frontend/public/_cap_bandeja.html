@@ -1,0 +1,12 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>sesion</title></head>
+<body style="font-family:Arial;background:#0f172a;color:#fff;padding:40px">
+<h3>Preparando captura: bandeja (analista)</h3>
+<script>
+try {
+  localStorage.setItem('token', "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sIjoiYW5hbGlzdGEiLCJub21icmUiOiJBbmEgVG9ycmVzIiwiZW1haWwiOiJhbmEudG9ycmVzQGVtcHJlc2EuY29tIiwiaWF0IjoxNzkyNjEzMDA0LCJleHAiOjE3OTI2NDE4MDR9.pTRbOgQno2zfMyDEUwNPrPvDPH607qatysbhXAJKitc");
+  localStorage.setItem('usuario', {"id": 3, "nombre": "Ana Torres", "email": "ana.torres@empresa.com", "rol": "analista", "especialidad": "Hardware"});
+  location.replace('/bandeja');
+} catch (e) { document.body.innerHTML += '<pre>' + e + '</pre>'; }
+</script>
+</body></html>

@@ -1,0 +1,35 @@
+<div class="tabbar">
+  <div class="tabbar-brand">
+    <span class="logo">⬡</span>
+    <strong>Triaje TI</strong>
+  </div>
+
+  <nav class="tabs">
+    <a routerLink="/nuevo-ticket" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+      <span class="tab-icon">✏️</span> Nuevo ticket
+    </a>
+    <a routerLink="/bandeja" routerLinkActive="active">
+      <span class="tab-icon">🗂️</span> Bandeja
+    </a>
+    @if (auth.esRol('analista', 'administrador')) {
+      <a routerLink="/dashboard" routerLinkActive="active">
+        <span class="tab-icon">📊</span> Dashboard
+      </a>
+    }
+    @if (auth.esRol('administrador')) {
+      <a routerLink="/analistas" routerLinkActive="active">
+        <span class="tab-icon">👥</span> Analistas
+      </a>
+    }
+  </nav>
+
+  <div class="tabbar-user">
+    @if (auth.usuario(); as u) {
+      <span class="rol-chip">{{ u.rol }}</span>
+      <span class="user-name">{{ u.nombre }}</span>
+    }
+    <button class="btn btn-logout" (click)="cerrarSesion()" title="Cerrar sesión">
+      <span class="tab-icon">⏻</span> Cerrar sesión
+    </button>
+  </div>
+</div>

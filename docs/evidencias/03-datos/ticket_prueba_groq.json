@@ -1,0 +1,18 @@
+﻿{
+    "id":  8,
+    "codigo":  "TKT-YYH7XH",
+    "categoria":  "Redes",
+    "severidad":  "Alta",
+    "sentimiento":  "Frustrado",
+    "score_frustracion":  0.9,
+    "resumen_ejecutivo":  "VPN no conecta desde lunes en laptop, impide trabajar con reportes y genera gran frustración.",
+    "priority_score":  81,
+    "sla_horas":  4,
+    "proveedor_ia":  "groq",
+    "latencia_ms":  1161,
+    "analista_asignado":  {
+                              "id":  5,
+                              "nombre":  "María Gómez",
+                              "email":  "maria.gomez@empresa.com"
+                          }
+}

@@ -1,0 +1,71 @@
+<div class="page">
+  <h1>Gestión de analistas</h1>
+  <p class="muted">Agrega especialistas para el enrutamiento inteligente por categoría.</p>
+
+  @if (mensaje()) {
+    <div class="alert alert-success">{{ mensaje() }}</div>
+  }
+  @if (error()) {
+    <div class="alert alert-error">{{ error() }}</div>
+  }
+
+  <div class="admin-grid">
+    <div class="card">
+      <h2>Nuevo analista</h2>
+      <form class="form-stack" (ngSubmit)="crear()">
+        <label>
+          Nombre
+          <input type="text" [(ngModel)]="nombre" name="nombre" required placeholder="Ana Torres" />
+        </label>
+        <label>
+          Email
+          <input type="email" [(ngModel)]="email" name="email" required placeholder="ana@empresa.com" />
+        </label>
+        <label>
+          Contraseña
+          <input type="text" [(ngModel)]="password" name="password" required placeholder="Clave temporal" />
+        </label>
+        <label>
+          Especialidad
+          <select [(ngModel)]="especialidad" name="especialidad">
+            <option value="">General</option>
+            <option value="Hardware">Hardware</option>
+            <option value="Software">Software</option>
+            <option value="Redes">Redes</option>
+            <option value="Accesos">Accesos</option>
+            <option value="Base de Datos">Base de Datos</option>
+          </select>
+        </label>
+        <button class="btn btn-primary" type="submit">Crear analista</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>Analistas registrados</h2>
+      @if (cargando()) {
+        <p class="muted">Cargando…</p>
+      } @else {
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Especialidad</th>
+                <th>Carga activa</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (a of analistas(); track a.id) {
+                <tr>
+                  <td>{{ a.nombre }}</td>
+                  <td>{{ a.especialidad || 'General' }}</td>
+                  <td>{{ a.carga_activa ?? 0 }} tickets</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </div>
+</div>

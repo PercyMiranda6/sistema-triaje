@@ -1,0 +1,86 @@
+<div class="page">
+  <div class="page-head">
+    <div>
+      <h1>Bandeja de tickets</h1>
+      <p class="muted">Gestión con alertas emocionales: el color indica urgencia/frustración detectada por el triaje automático.</p>
+    </div>
+    <button class="btn btn-primary" [routerLink]="['/nuevo-ticket']">+ Nuevo ticket</button>
+  </div>
+
+  @if (error(); as err) {
+    <div class="alert alert-error">{{ err }}</div>
+  }
+
+  <form class="filters" (ngSubmit)="aplicarFiltros()">
+    <label>
+      Estado
+      <select [(ngModel)]="filtroEstado" name="estado">
+        <option value="">Todos</option>
+        <option value="nuevo">Nuevo</option>
+        <option value="asignado">Asignado</option>
+        <option value="en_proceso">En proceso</option>
+        <option value="resuelto">Resuelto</option>
+        <option value="cerrado">Cerrado</option>
+      </select>
+    </label>
+
+    <label>
+      Severidad
+      <select [(ngModel)]="filtroSeveridad" name="severidad">
+        <option value="">Todas</option>
+        <option value="Baja">Baja</option>
+        <option value="Media">Media</option>
+        <option value="Alta">Alta</option>
+        <option value="Critica">Crítica</option>
+      </select>
+    </label>
+
+    <label>
+      Categoría
+      <select [(ngModel)]="filtroCategoria" name="categoria">
+        <option value="">Todas</option>
+        <option value="Hardware">Hardware</option>
+        <option value="Software">Software</option>
+        <option value="Redes">Redes</option>
+        <option value="Accesos">Accesos</option>
+        <option value="Base de Datos">Base de Datos</option>
+      </select>
+    </label>
+
+    <button class="btn btn-outline" type="submit">Filtrar</button>
+  </form>
+
+  @if (cargando()) {
+    <p class="muted">Cargando tickets…</p>
+  } @else if (ticketsSignal().length === 0) {
+    <div class="card empty">No hay tickets que mostrar.</div>
+  } @else {
+    <div class="ticket-list">
+      @for (t of ticketsSignal(); track t.id) {
+        <div class="card ticket-row" [class]="'ticket-' + t.severidad.toLowerCase()" (click)="router.navigate(['/tickets', t.id])">
+          <div class="ticket-left">
+            <div class="ticket-code">{{ t.codigo }}</div>
+            <div class="ticket-asunto">{{ t.asunto }}</div>
+            <div class="ticket-meta">
+              {{ t.cliente_nombre }} · {{ t.creado_el | date: 'short' }}
+              @if (t.analista_nombre) { · Analista: {{ t.analista_nombre }} }
+              @if (t.proveedor_ia) { · IA: {{ t.proveedor_ia }} }
+            </div>
+          </div>
+          <div class="ticket-right">
+            <span class="badge" [class]="sevClase(t.severidad)">{{ t.severidad }}</span>
+            <span class="badge" [class]="sentClase(t.sentimiento)">{{ t.sentimiento }}</span>
+            <span class="badge" [class]="prioClase(t.priority_score)">P{{ t.priority_score }}</span>
+            <span class="badge estado">{{ estadoTexto(t.estado) }}</span>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="pagination">
+      <button class="btn btn-outline btn-sm" (click)="cambiarPagina(-1)" [disabled]="page() <= 1">← Anterior</button>
+      <span class="muted">Página {{ page() }} de {{ totalPaginas() }} · {{ total() }} tickets</span>
+      <button class="btn btn-outline btn-sm" (click)="cambiarPagina(1)" [disabled]="page() >= totalPaginas()">Siguiente →</button>
+    </div>
+  }
+</div>
