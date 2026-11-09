@@ -83,3 +83,33 @@ CREATE TABLE IF NOT EXISTS auditoria (
   PRIMARY KEY (id),
   CONSTRAINT fk_aud_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
+
+-- ----------------------------------------------------------
+-- TABLA: encuesta_csat (CSAT por ticket cerrado/resuelto)
+-- ----------------------------------------------------------
+CREATE TABLE IF NOT EXISTS encuesta_csat (
+  id INT NOT NULL AUTO_INCREMENT,
+  ticket_id INT NOT NULL,
+  cliente_id INT NOT NULL,
+  puntuacion TINYINT UNSIGNED NOT NULL CHECK (puntuacion BETWEEN 1 AND 5),
+  comentario TEXT NULL,
+  fecha_respuesta TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY uk_una_encuesta_por_ticket (ticket_id, cliente_id),
+  CONSTRAINT fk_csat_ticket FOREIGN KEY (ticket_id) REFERENCES tickets(id) ON DELETE CASCADE,
+  CONSTRAINT fk_csat_cliente FOREIGN KEY (cliente_id) REFERENCES usuarios(id)
+) ENGINE=InnoDB;
+
+-- ----------------------------------------------------------
+-- TABLA: respuesta_nps (NPS por cliente y periodo)
+-- ----------------------------------------------------------
+CREATE TABLE IF NOT EXISTS respuesta_nps (
+  id INT NOT NULL AUTO_INCREMENT,
+  cliente_id INT NOT NULL,
+  puntuacion TINYINT UNSIGNED NOT NULL CHECK (puntuacion BETWEEN 0 AND 10),
+  comentario TEXT NULL,
+  fecha_respuesta TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  periodo VARCHAR(20) NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_nps_cliente FOREIGN KEY (cliente_id) REFERENCES usuarios(id)
+) ENGINE=InnoDB;

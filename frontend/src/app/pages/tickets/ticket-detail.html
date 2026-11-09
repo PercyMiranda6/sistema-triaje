@@ -154,6 +154,18 @@
         </div>
       </section>
     }
+
+    <!-- Modal CSAT para cliente -->
+    @if (mostrarCsat() && !csatRespondido()) {
+      <app-csat-modal
+        [ticketId]="ticket()!.id"
+        (cerrado)="onCsatCerrado($event)"
+      ></app-csat-modal>
+    }
+
+    @if (csatRespondido()) {
+      <div class="alert alert-success">Gracias por calificar la atención.</div>
+    }
   </div>
 } @else {
   <p class="muted">El ticket no existe.</p>

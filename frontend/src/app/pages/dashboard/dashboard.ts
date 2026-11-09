@@ -1,18 +1,40 @@
 import { Component, inject, signal, ElementRef, viewChild, OnDestroy } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
 import { firstValueFrom } from 'rxjs';
 import Chart from 'chart.js/auto';
 import { ChartConfiguration } from 'chart.js';
 import { DashboardService, DatosDashboard } from '../../services/dashboard.service';
+import { EncuestaService } from '../../services/encuesta.service';
+import {
+  CsatMetrica,
+  CsatPorCategoria,
+  CsatPorAnalista,
+  CsatPorMes,
+  NpsResumen,
+  NpsPorPeriodo,
+} from '../../models';
 
 @Component({
   selector: 'app-dashboard',
+  imports: [DecimalPipe],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
 export class DashboardComponent implements OnDestroy {
   private dash = inject(DashboardService);
+  private encuesta = inject(EncuestaService);
 
   datos = signal<DatosDashboard | null>(null);
+  csat = signal<{
+    promedio: CsatMetrica;
+    porCategoria: CsatPorCategoria[];
+    porAnalista: CsatPorAnalista[];
+    porMes: CsatPorMes[];
+  } | null>(null);
+  nps = signal<{
+    resumen: NpsResumen;
+    porPeriodo: NpsPorPeriodo[];
+  } | null>(null);
   cargando = signal(true);
   error = signal('');
 
@@ -20,6 +42,8 @@ export class DashboardComponent implements OnDestroy {
   canvasSeveridad = viewChild<ElementRef<HTMLCanvasElement>>('canvasSeveridad');
   canvasCategoria = viewChild<ElementRef<HTMLCanvasElement>>('canvasCategoria');
   canvasPorDia = viewChild<ElementRef<HTMLCanvasElement>>('canvasPorDia');
+  canvasCsat = viewChild<ElementRef<HTMLCanvasElement>>('canvasCsat');
+  canvasNps = viewChild<ElementRef<HTMLCanvasElement>>('canvasNps');
 
   private graficos: Chart[] = [];
 
@@ -36,8 +60,14 @@ export class DashboardComponent implements OnDestroy {
     this.error.set('');
     let d: DatosDashboard | null = null;
     try {
-      d = await firstValueFrom(this.dash.resumen());
-      this.datos.set(d);
+      const [dash, csat, nps] = await Promise.all([
+        firstValueFrom(this.dash.resumen()),
+        firstValueFrom(this.encuesta.metricasCsat()).catch(() => null),
+        firstValueFrom(this.encuesta.metricasNps()).catch(() => null),
+      ]);
+      this.datos.set(dash);
+      this.csat.set(csat);
+      this.nps.set(nps);
     } catch (e: any) {
       this.error.set(e?.error?.error || 'No se pudieron cargar las métricas.');
     } finally {
@@ -48,6 +78,8 @@ export class DashboardComponent implements OnDestroy {
     if (d) {
       setTimeout(() => this.dibujar(d!), 0);
     }
+    setTimeout(() => this.dibujarCsat(), 0);
+    setTimeout(() => this.dibujarNps(), 0);
   }
 
   private dibujar(d: DatosDashboard): void {
@@ -183,6 +215,89 @@ export class DashboardComponent implements OnDestroy {
         maintainAspectRatio: false,
         plugins: { legend: { display: false } },
         scales: { x: { grid: { display: false }, ticks: ejes.ticks }, y: { beginAtZero: true, grid: ejes.grid, ticks: ejes.ticks, border: { display: false } } },
+      },
+    });
+  }
+
+  private dibujarCsat(): void {
+    if (!this.csat()) return;
+    const { promedio, porCategoria } = this.csat()!;
+
+    // Gráfico: CSAT promedio por categoría (pie)
+    const crear = (el: HTMLCanvasElement | undefined, config: ChartConfiguration) => {
+      if (!el) {
+        console.warn('[Dashboard] Canvas no encontrado:', config.type);
+        return;
+      }
+      this.graficos.push(new Chart(el, config));
+    };
+
+    crear(this.canvasCsat()?.nativeElement, {
+      type: 'pie',
+      data: {
+        labels: porCategoria.map((c) => c.categoria),
+        datasets: [{
+          label: 'Promedio CSAT por categoría',
+          data: porCategoria.map((c) => c.promedio),
+          backgroundColor: ['#2563eb', '#177a52', '#c67a08', '#dc4326', '#b3261e'],
+          borderColor: '#FFFFFF',
+          borderWidth: 2,
+        }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'right', labels: { boxWidth: 10, boxHeight: 10, color: '#3D424E', font: { size: 11 } } },
+          tooltip: {
+            callbacks: {
+              label: (ctx: any) => `CSAT: ${ctx.parsed?.toFixed?.(1) ?? 0} / 5`,
+            },
+          },
+        },
+      },
+    });
+  }
+
+  private dibujarNps(): void {
+    if (!this.nps()) return;
+    const { resumen } = this.nps()!;
+
+    // Gráfico: Distribución NPS (promotores, pasivos, detractores)
+    const crear = (el: HTMLCanvasElement | undefined, config: ChartConfiguration) => {
+      if (!el) {
+        console.warn('[Dashboard] Canvas no encontrado:', config.type);
+        return;
+      }
+      this.graficos.push(new Chart(el, config));
+    };
+
+    crear(this.canvasNps()?.nativeElement, {
+      type: 'doughnut',
+      data: {
+        labels: ['Promotores (9-10)', 'Pasivos (7-8)', 'Detractores (0-6)'],
+        datasets: [{
+          data: [resumen.promotores, resumen.pasivos, resumen.detractores],
+          backgroundColor: ['#177a52', '#c67a08', '#b3261e'],
+          borderColor: '#FFFFFF',
+          borderWidth: 2,
+        }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'right', labels: { boxWidth: 10, boxHeight: 10, color: '#3D424E', font: { size: 11 } } },
+          tooltip: {
+            callbacks: {
+              label: (ctx: any) => {
+                const total = resumen.total_respuestas || 1;
+                const pct = ((ctx.parsed ?? 0) / total * 100).toFixed(1);
+                return `${ctx.label}: ${ctx.parsed} (${pct}%)`;
+              },
+            },
+          },
+        },
       },
     });
   }

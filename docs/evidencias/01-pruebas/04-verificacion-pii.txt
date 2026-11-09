@@ -1,13 +1,13 @@
-CASO | TEXTO ANONIMIZADO | DETECCIONES
+CASO 		 	  | TEXTO ANONIMIZADO | DETECCIONES
 ------------------------------------------------------------------------------------------------------------------------
-DNI con contexto | Buenos dias, soy [NOMBRE] [NOMBRE] mi DNI es [DNI], correo [EMAIL] y mi [CREDENCIAL] | DNIx1, Emailx1, Credencialx1, Nombrex2
+DNI con contexto 	  | Buenos dias, soy [NOMBRE] [NOMBRE] mi DNI es [DNI], correo [EMAIL] y mi [CREDENCIAL] | DNIx1, Emailx1, Credencialx1, Nombrex2
 Credencial con dos puntos | La [CREDENCIAL] no me deja entrar. | Credencialx1
-Contrasena con tilde | Mi [CREDENCIAL] por favor. | Credencialx1
-Password en ingles | [CREDENCIAL] es mi clave de acceso | Credencialx1
-Telefono | Mi telefono es [TELEFONO] y mi tarjeta [TARJETA]. | Tarjetax1, Teléfonox1
-Honorifico | El Sr. [NOMBRE] [NOMBRE] no puede acceder a la plataforma. | Nombrex2
-Frase inductora | Te escribo de parte de la Sra. [NOMBRE] [NOMBRE] solicitud con el folio 12345. | Nombrex2
-Sin datos personales | La aplicacion no carga desde la manana en el servidor de produccion. | (sin deteccion)
+Contrasena con tilde 	  | Mi [CREDENCIAL] por favor. | Credencialx1
+Password en ingles 	  | [CREDENCIAL] es mi clave de acceso | Credencialx1
+Telefono 		  | Mi telefono es [TELEFONO] y mi tarjeta [TARJETA]. | Tarjetax1, Teléfonox1
+Honorifico 		  | El Sr. [NOMBRE] [NOMBRE] no puede acceder a la plataforma. | Nombrex2
+Frase inductora 	  | Te escribo de parte de la Sra. [NOMBRE] [NOMBRE] solicitud con el folio 12345. | Nombrex2
+Sin datos personales 	  | La aplicacion no carga desde la manana en el servidor de produccion. | (sin deteccion)
 
 === VERIFICACION DE NO FILTRACION ===
 PASA   -> "Buenos dias, soy Roberto Diaz, mi DNI es 44236789, correo roberto.diaz@gmail.com y mi clave es abc123." -> Buenos dias, soy [NOMBRE] [NOMBRE] mi DNI es [DNI], correo [EMAIL] y mi [CREDENCIAL]

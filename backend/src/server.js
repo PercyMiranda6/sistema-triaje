@@ -17,6 +17,7 @@ const authRoutes = require('./routes/auth.routes');
 const ticketRoutes = require('./routes/ticket.routes');
 const dashboardRoutes = require('./routes/dashboard.routes');
 const userRoutes = require('./routes/user.routes');
+const encuestaRoutes = require('./routes/encuesta.routes');
 
 app.get('/api/health', async (req, res) => {
   try {
@@ -31,6 +32,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/tickets', ticketRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/usuarios', userRoutes);
+app.use('/api/encuestas', encuestaRoutes);
 
 app.use(noEncontrado);
 app.use(errorGlobal);

@@ -20,6 +20,7 @@ export interface Ticket {
   score_frustracion: number;
   priority_score: number;
   estado: 'nuevo' | 'asignado' | 'en_proceso' | 'resuelto' | 'cerrado' | 'rechazado';
+  cliente_id?: number;
   analista_id?: number | null;
   analista_nombre?: string | null;
   cliente_nombre?: string | null;
@@ -37,4 +38,56 @@ export interface Paginacion {
   limit: number;
   total: number;
   totalPaginas: number;
+}
+
+export interface CsatEstado {
+  ticketId: number;
+  estado: string;
+  yaRespondio: boolean;
+  mostrarEncuesta: boolean;
+}
+
+export interface CsatMetrica {
+  total_respuestas: number;
+  promedio: number;
+  cincos: number;
+  cuatros: number;
+  treses: number;
+  dos: number;
+  unos: number;
+}
+
+export interface CsatPorCategoria {
+  categoria: string;
+  total: number;
+  promedio: number;
+}
+
+export interface CsatPorAnalista {
+  nombre: string;
+  especialidad: string | null;
+  total: number;
+  promedio: number;
+}
+
+export interface CsatPorMes {
+  mes: string;
+  total: number;
+  promedio: number;
+}
+
+export interface NpsResumen {
+  total_respuestas: number;
+  promedio: number;
+  promotores: number;
+  pasivos: number;
+  detractores: number;
+  nps_score: number;
+}
+
+export interface NpsPorPeriodo {
+  periodo: string;
+  total: number;
+  promedio: number;
+  nps_score: number;
 }
