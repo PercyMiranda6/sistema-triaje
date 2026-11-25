@@ -1,0 +1,57 @@
+EVIDENCIA DE PRUEBAS - SISTEMA DE TRIAJE
+Fecha de ejecución: 2026-11-25T23:05:50.206Z
+Node.js: v24.13.0
+Directorio: D:\CAPSTONE\sistema-triaje
+
+RESUMEN
+PASS: 3 | FAIL: 0 | OMITIDAS: 1
+
+[PASS] Unitarias: reglas de negocio, PII y fallback (48 ms)
+=== PRUEBAS UNITARIAS ===
+
+  PASS Calcula score crítico con frustración alta
+  PASS Limita score al rango 0..100
+  PASS Asigna etiqueta según umbral
+  PASS Anonimiza DNI, correo y credencial
+  PASS Anonimiza nombre introducido con frase indicadora
+  PASS Fallback clasifica una incidencia de red crítica y frustrada
+
+=== Resultado unitarias: 6 OK, 0 FAIL ===
+
+[SKIP] Integración: flujo E2E de API, roles y persistencia (0 ms)
+API no disponible en API_BASE. Levanta el backend y vuelve a ejecutar para obtener esta evidencia.
+
+[PASS] Sistema: compilación de frontend (5016 ms)
+> frontend@0.0.0 build
+> ng build
+
+> Building...
+√ Building...
+Initial chunk files | Names         |  Raw size | Estimated transfer size
+chunk-RZWGHVB2.js   | -             | 166.85 kB |                48.64 kB
+chunk-HGYV4X37.js   | -             |  88.78 kB |                22.43 kB
+chunk-BX6SQVAQ.js   | -             |  13.37 kB |                 4.24 kB
+styles-DUDV5M2K.css | styles        |  10.12 kB |                 2.66 kB
+main-YU5UN7WF.js    | main          |   9.51 kB |                 2.99 kB
+chunk-C6W3UDLN.js   | -             | 990 bytes |               990 bytes
+
+                    | Initial total | 289.63 kB |                81.97 kB
+
+Lazy chunk files    | Names         |  Raw size | Estimated transfer size
+chunk-BDAEKGA4.js   | dashboard     | 218.18 kB |                65.23 kB
+chunk-7R6UTZKB.js   | -             |  35.07 kB |                 7.47 kB
+chunk-LKTZNC4C.js   | ticket-detail |  15.11 kB |                 4.68 kB
+chunk-74EFA5ZP.js   | ticket-list   |   9.51 kB |                 3.21 kB
+chunk-F6TKJUYW.js   | ticket-form   |   6.35 kB |                 2.53 kB
+chunk-2CPZGAYH.js   | login         |   5.74 kB |                 2.13 kB
+chunk-2RMER3EL.js   | analistas     |   5.39 kB |                 1.98 kB
+chunk-MLL2JQS7.js   | register      |   3.62 kB |                 1.47 kB
+chunk-6IFAGPQK.js   | -             | 816 bytes |               816 bytes
+chunk-QKA3O54M.js   | -             | 699 bytes |               699 bytes
+chunk-2Q5SRGG2.js   | -             | 536 bytes |               536 bytes
+
+Application bundle generation complete. [3.191 seconds] - 2026-11-25T23:05:55.260Z
+
+Output location: D:\CAPSTONE\sistema-triaje\frontend\dist\frontend
+
+[PASS] Sistema: sintaxis del servidor backend (50 ms)

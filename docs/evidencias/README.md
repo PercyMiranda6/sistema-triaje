@@ -32,6 +32,17 @@ node test/verificacion-pii.js     # filtro de PII y no filtración
 node test/benchmark-modelos.js    # comparativa de latencia y calidad de modelos
 ```
 
+### Ejecutor recomendado para generar evidencia
+
+Desde `backend`, ejecuta:
+
+```bash
+npm test                 # pruebas unitarias, sin servidor ni base de datos
+npm run test:evidence    # unitarias + integración E2E + compilación del sistema
+```
+
+El ejecutor crea un archivo fechado `01-pruebas/reporte-pruebas-*.txt`. La integración E2E se ejecuta automáticamente si la API responde en `API_BASE` (por defecto `http://localhost:4000/api`); si el backend no está levantado, queda como **OMITIDA** y no se reporta falsamente como aprobada. La compilación del frontend puede crear archivos temporales en `frontend/dist`, que están ignorados por Git.
+
 ## 02-capturas — Evidencia funcional de la interfaz
 
 | Archivo | Contenido |

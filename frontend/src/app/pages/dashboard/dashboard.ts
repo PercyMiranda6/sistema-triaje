@@ -1,5 +1,4 @@
 import { Component, inject, signal, ElementRef, viewChild, OnDestroy } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
 import { firstValueFrom } from 'rxjs';
 import Chart from 'chart.js/auto';
 import { ChartConfiguration } from 'chart.js';
@@ -16,7 +15,7 @@ import {
 
 @Component({
   selector: 'app-dashboard',
-  imports: [DecimalPipe],
+  imports: [],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
@@ -42,6 +41,7 @@ export class DashboardComponent implements OnDestroy {
   canvasSeveridad = viewChild<ElementRef<HTMLCanvasElement>>('canvasSeveridad');
   canvasCategoria = viewChild<ElementRef<HTMLCanvasElement>>('canvasCategoria');
   canvasPorDia = viewChild<ElementRef<HTMLCanvasElement>>('canvasPorDia');
+  canvasSentimiento = viewChild<ElementRef<HTMLCanvasElement>>('canvasSentimiento');
   canvasCsat = viewChild<ElementRef<HTMLCanvasElement>>('canvasCsat');
   canvasNps = viewChild<ElementRef<HTMLCanvasElement>>('canvasNps');
 
@@ -65,6 +65,7 @@ export class DashboardComponent implements OnDestroy {
         firstValueFrom(this.encuesta.metricasCsat()).catch(() => null),
         firstValueFrom(this.encuesta.metricasNps()).catch(() => null),
       ]);
+      d = dash;
       this.datos.set(dash);
       this.csat.set(csat);
       this.nps.set(nps);
@@ -76,7 +77,7 @@ export class DashboardComponent implements OnDestroy {
 
     // Dibuja cuando los canvas ya están montados y con tamaño (un frame después del render).
     if (d) {
-      setTimeout(() => this.dibujar(d!), 0);
+      setTimeout(() => this.dibujar(d), 0);
     }
     setTimeout(() => this.dibujarCsat(), 0);
     setTimeout(() => this.dibujarNps(), 0);
@@ -216,6 +217,25 @@ export class DashboardComponent implements OnDestroy {
         plugins: { legend: { display: false } },
         scales: { x: { grid: { display: false }, ticks: ejes.ticks }, y: { beginAtZero: true, grid: ejes.grid, ticks: ejes.ticks, border: { display: false } } },
       },
+    });
+
+    crear(this.canvasSentimiento()?.nativeElement, {
+      type: 'doughnut',
+      data: {
+        labels: d.sentimiento.map((s) => s.sentimiento),
+        datasets: [{
+          label: 'Tickets',
+          data: d.sentimiento.map((s) => s.cantidad),
+          backgroundColor: d.sentimiento.map((s) => ({
+            Positivo: '#177A52',
+            Neutro: '#C67A08',
+            Frustrado: '#B3261E',
+          }[s.sentimiento] || '#9A9EA8')),
+          borderColor: '#FFFFFF',
+          borderWidth: 2,
+        }],
+      },
+      options: opcionesCirculares('62%'),
     });
   }
 

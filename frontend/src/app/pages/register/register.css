@@ -1,6 +1,21 @@
 /* ============================================================
    REGISTRO
    ============================================================ */
+.auth-wrap {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 2rem 1.25rem;
+}
+
+.auth-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 1.9rem 1.8rem;
+  box-shadow: var(--shadow-lg);
+}
+
 .auth-card-single {
   width: 100%;
   max-width: 440px;

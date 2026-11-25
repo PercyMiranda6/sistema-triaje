@@ -39,11 +39,6 @@
         <span class="kpi-foot">cerrados</span>
       </div>
       <div class="kpi-tile">
-        <span class="label">Críticos abiertos</span>
-        <strong class="kpi-value danger">{{ d.totales.criticos_abiertos }}</strong>
-        <span class="kpi-foot">requieren atención</span>
-      </div>
-      <div class="kpi-tile">
         <span class="label">FRT · primera respuesta</span>
         <strong class="kpi-value">{{ d.frt_minutos }}<small>min</small></strong>
         <span class="kpi-foot">tiempo medio</span>
@@ -53,7 +48,7 @@
         <strong class="kpi-value">{{ d.mttr }}<small>min</small></strong>
         <span class="kpi-foot">tiempo medio</span>
       </div>
-      <div class="kpi-tile wide">
+      <div class="kpi-tile">
         <span class="label">Cumplimiento de SLA</span>
         <strong class="kpi-value" [class.ok]="(d.sla.pct_cumplimiento ?? 0) >= 90" [class.danger]="(d.sla.pct_cumplimiento ?? 0) < 90">
           {{ d.sla.pct_cumplimiento ?? '—' }}<small>%</small>
@@ -61,28 +56,6 @@
         <span class="kpi-foot">{{ d.sla.dentro_sla }} de {{ d.sla.total_resueltos }} tickets resueltos dentro del SLA</span>
       </div>
     </div>
-
-    <!-- KPIs CSAT y NPS -->
-    @if (csat() || nps()) {
-      <div class="kpi-grid">
-        @if (csat(); as c) {
-          <div class="kpi-tile">
-            <span class="label">CSAT promedio</span>
-            <strong class="kpi-value">{{ c.promedio.promedio | number:'1.2-2' }}<small>/5</small></strong>
-            <span class="kpi-foot">{{ c.promedio.total_respuestas }} respuestas</span>
-          </div>
-        }
-        @if (nps(); as n) {
-          <div class="kpi-tile">
-            <span class="label">NPS score</span>
-            <strong class="kpi-value" [class.ok]="n.resumen.nps_score >= 0" [class.danger]="n.resumen.nps_score < 0">
-              {{ n.resumen.nps_score }}
-            </strong>
-            <span class="kpi-foot">{{ n.resumen.total_respuestas }} respuestas</span>
-          </div>
-        }
-      </div>
-    }
 
     <!-- Gráficos -->
     <div class="charts-grid">
@@ -105,6 +78,12 @@
         <span class="eyebrow">Tendencia</span>
         <h3>Tickets por día (7 días)</h3>
         <div class="chart-box"><canvas #canvasPorDia></canvas></div>
+      </section>
+
+      <section class="card chart-card">
+        <span class="eyebrow">Experiencia</span>
+        <h3>Sentimiento de los clientes</h3>
+        <div class="chart-box"><canvas #canvasSentimiento></canvas></div>
       </section>
 
       @if (csat(); as c) {

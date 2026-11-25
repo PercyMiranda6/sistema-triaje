@@ -6,6 +6,7 @@
  */
 
 const { pool } = require('../config/db');
+const CAPACIDAD_MAXIMA = 20;
 
 async function buscarAnalistaIdoneo(categoria) {
   const [disponibles] = await pool.query(
@@ -15,9 +16,10 @@ async function buscarAnalistaIdoneo(categoria) {
                 AND t.estado IN ('asignado','en_proceso','nuevo')) AS carga
        FROM usuarios u
       WHERE u.rol = 'analista' AND u.activo = 1
+      HAVING carga < ?
       ORDER BY (u.especialidad = ?) DESC, carga ASC, u.id ASC
       LIMIT 1`,
-    [categoria]
+    [CAPACIDAD_MAXIMA, categoria]
   );
 
   // Filtro estricto de especialidad: si hay alguien de la categoría con carga < N, priorizarlo
@@ -28,14 +30,13 @@ async function buscarAnalistaIdoneo(categoria) {
                 AND t.estado IN ('asignado','en_proceso','nuevo')) AS carga
        FROM usuarios u
       WHERE u.rol = 'analista' AND u.activo = 1 AND u.especialidad = ?
+      HAVING carga < ?
       ORDER BY carga ASC, u.id ASC
       LIMIT 1`,
-    [categoria]
+    [categoria, CAPACIDAD_MAXIMA]
   );
 
-  if (especialistas.length > 0 && especialistas[0].carga < 5) {
-    return especialistas[0];
-  }
+  if (especialistas.length > 0) return especialistas[0];
   return disponibles[0] || null;
 }
 

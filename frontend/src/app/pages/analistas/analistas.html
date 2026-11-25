@@ -67,10 +67,10 @@
                   <td>{{ a.nombre }}</td>
                   <td><span class="badge badge-neutro">{{ a.especialidad || 'General' }}</span></td>
                   <td>
-                    @if ((a.carga_activa ?? 0) >= 5) {
+                    @if ((a.carga_activa ?? 0) >= 20) {
                       <span class="badge badge-critica">Saturado</span>
                     } @else {
-                      <span class="mono">{{ a.carga_activa ?? 0 }} / 5</span>
+                      <span class="mono">{{ a.carga_activa ?? 0 }} / 20</span>
                     }
                   </td>
                 </tr>
