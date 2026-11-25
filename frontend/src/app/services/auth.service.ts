@@ -2,11 +2,12 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { Usuario } from '../models';
+import { API_BASE } from '../api.config';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient);
-  private readonly api = 'http://localhost:4000/api/auth';
+  private readonly api = `${API_BASE}/auth`;
 
   usuario = signal<Usuario | null>(null);
 

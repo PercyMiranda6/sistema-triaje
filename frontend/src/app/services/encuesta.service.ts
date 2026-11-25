@@ -10,11 +10,12 @@ import {
   NpsResumen,
   NpsPorPeriodo,
 } from '../models';
+import { API_BASE } from '../api.config';
 
 @Injectable({ providedIn: 'root' })
 export class EncuestaService {
   private http = inject(HttpClient);
-  private readonly api = 'http://localhost:4000/api';
+  private readonly api = API_BASE;
 
   /** Verificar si el cliente puede responder CSAT para un ticket */
   verificarEstadoCsat(ticketId: number): Observable<CsatEstado> {

@@ -2,11 +2,12 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Paginacion, Ticket, Usuario } from '../models';
+import { API_BASE } from '../api.config';
 
 @Injectable({ providedIn: 'root' })
 export class TicketService {
   private http = inject(HttpClient);
-  private readonly api = 'http://localhost:4000/api';
+  private readonly api = API_BASE;
 
   crear(asunto: string, descripcion: string): Observable<{ mensaje: string; ticket: Ticket }> {
     return this.http.post<{ mensaje: string; ticket: Ticket }>(`${this.api}/tickets`, { asunto, descripcion });

@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { API_BASE } from '../api.config';
 
 export interface DatosDashboard {
   totales: { total: number; abiertos: number; resueltos: number; nuevos: number; criticos_abiertos: number };
@@ -18,7 +19,7 @@ export interface DatosDashboard {
 @Injectable({ providedIn: 'root' })
 export class DashboardService {
   private http = inject(HttpClient);
-  private readonly api = 'http://localhost:4000/api/dashboard';
+  private readonly api = `${API_BASE}/dashboard`;
 
   resumen(): Observable<DatosDashboard> {
     return this.http.get<DatosDashboard>(`${this.api}/resumen`);

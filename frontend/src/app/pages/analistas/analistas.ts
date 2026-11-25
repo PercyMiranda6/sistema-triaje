@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import { TicketService } from '../../services/ticket.service';
 import { Usuario } from '../../models';
+import { API_BASE } from '../../api.config';
 
 @Component({
   selector: 'app-analistas',
@@ -43,7 +44,7 @@ export class AnalistasComponent {
     this.error.set('');
     this.mensaje.set('');
     try {
-      await fetch('http://localhost:4000/api/usuarios/analistas', {
+      await fetch(`${API_BASE}/usuarios/analistas`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
         body: JSON.stringify({

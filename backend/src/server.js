@@ -46,7 +46,7 @@ async function iniciar() {
 
     await require('./seed')();
 
-    app.listen(PORT, () => {
+    app.listen(PORT, '0.0.0.0', () => {
       console.log(`[SERVER] Sistema de Triaje escuchando en http://localhost:${PORT}`);
       console.log(`[SERVER] Healthcheck: http://localhost:${PORT}/api/health`);
     });
