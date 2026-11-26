@@ -39,6 +39,15 @@
 
 .management-grid label { margin-bottom: 0.8rem; }
 
+.management-grid textarea { min-height: 88px; resize: vertical; }
+
+.info-item-wide { grid-column: 1 / -1; }
+
+.info-item-wide strong {
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+
 .prio-alta { color: var(--danger); }
 
 @media (max-width: 900px) {

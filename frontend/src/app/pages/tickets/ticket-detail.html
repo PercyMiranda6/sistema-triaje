@@ -104,6 +104,12 @@
                 <strong>{{ t.cerrado_el | date: 'dd/MM/yyyy HH:mm' }}</strong>
               </div>
             }
+            @if (t.comentario_resolucion) {
+              <div class="info-item info-item-wide">
+                <span class="label">Comentario de resolución</span>
+                <strong>{{ t.comentario_resolucion }}</strong>
+              </div>
+            }
             @if (t.primer_respuesta_el) {
               <div class="info-item">
                 <span class="label">Primera respuesta</span>
@@ -134,6 +140,18 @@
                 <option value="rechazado">Rechazado</option>
               </select>
             </label>
+            @if (nuevoEstado === 'resuelto') {
+              <label>
+                Comentario de resolución
+                <textarea
+                  [(ngModel)]="comentarioResolucion"
+                  name="comentarioResolucion"
+                  required
+                  rows="3"
+                  placeholder="Describe qué se hizo para resolver el problema"
+                ></textarea>
+              </label>
+            }
             @if (nuevoEstado === 'rechazado') {
               <label>
                 Motivo del rechazo
