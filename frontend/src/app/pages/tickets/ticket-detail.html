@@ -166,6 +166,7 @@
                   name="comentarioResolucion"
                   required
                   rows="3"
+                  maxlength="1000"
                   placeholder="Describe qué se hizo para resolver el problema"
                 ></textarea>
               </label>
@@ -173,7 +174,7 @@
             @if (nuevoEstado === 'rechazado') {
               <label>
                 Motivo del rechazo
-                <input type="text" [(ngModel)]="motivo" name="motivoRechazo" required placeholder="Ej: solicitud duplicada o fuera de alcance" />
+                <input type="text" [(ngModel)]="motivo" name="motivoRechazo" required maxlength="1000" placeholder="Ej: solicitud duplicada o fuera de alcance" />
               </label>
             }
             <button class="btn btn-primary" (click)="cambiarEstado()">Guardar estado</button>
@@ -193,7 +194,7 @@
               </label>
               <label>
                 Motivo
-                <input type="text" [(ngModel)]="motivo" name="motivo" placeholder="Ej: corrección de prioridad detectada" />
+                <input type="text" [(ngModel)]="motivo" name="motivo" maxlength="1000" placeholder="Ej: corrección de prioridad detectada" />
               </label>
               <button class="btn btn-outline" (click)="reasignar()" [disabled]="!analistaSeleccionado">Reasignar</button>
             </div>

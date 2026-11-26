@@ -27,8 +27,9 @@ Cuando Render solicite variables secretas del backend, configura:
 | `DB_SSL` | `true` |
 | `JWT_SECRET` | Secreto largo y aleatorio |
 | `GROQ_API_KEY` | Clave de Groq, opcional; sin ella usa fallback local |
+| `CORS_ORIGINS` | `https://sistema-triaje-frontend.onrender.com` |
 
-También puedes configurar `SEED_ADMIN_EMAIL` y `SEED_ADMIN_PASSWORD` si deseas cambiar la cuenta administradora inicial.
+Configura también las variables privadas `SEED_*_EMAIL` y `SEED_*_PASSWORD` para los usuarios iniciales. No las publiques en el repositorio; el seed solo crea los usuarios que tengan ambas variables configuradas.
 
 ## 3. Conectar el frontend con la API
 

@@ -92,15 +92,9 @@ npm install
 npm start                     # http://localhost:4200
 ```
 
-## 👤 Cuentas demo (creadas por el seed en el arranque del backend)
+## 👤 Usuarios iniciales
 
-| Rol | Email | Contraseña |
-|---|---|---|
-| Administrador | admin@triaje.com | Admin123! |
-| Cliente | juan.perez@empresa.com | Cliente123! |
-| Analista | ana.torres@empresa.com | Analista123! |
-
-Analistas de soporte adicionales: `carlos.ruiz` (Software), `maria.gomez` (Redes), `luis.fernandez` (Accesos), `rosa.mendoza` (Base de Datos) — todos con `Analista123!`.
+Por seguridad, las credenciales no se publican en este repositorio. Configura las variables `SEED_*_EMAIL` y `SEED_*_PASSWORD` en `backend/.env` antes de iniciar el backend. El seed solo crea los usuarios que tengan ambas variables configuradas.
 
 ## 🔌 Endpoints principales
 
