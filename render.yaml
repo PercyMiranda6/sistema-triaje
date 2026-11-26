@@ -33,7 +33,7 @@ services:
     runtime: static
     rootDir: frontend
     buildCommand: npm ci && npm run build
-    staticPublishPath: dist/frontend
+    staticPublishPath: dist/frontend/browser
     routes:
       - type: rewrite
         source: /*

@@ -13,6 +13,8 @@ En Render selecciona **New > Blueprint**, conecta el repositorio `PercyMiranda6/
 - `sistema-triaje-api`: backend Express.
 - `sistema-triaje-frontend`: frontend Angular estático.
 
+El frontend Angular 21 publica sus archivos desde `dist/frontend/browser`, ya configurado en `render.yaml`.
+
 Cuando Render solicite variables secretas del backend, configura:
 
 | Variable | Valor |
