@@ -97,8 +97,13 @@ export class TicketDetailComponent implements OnInit {
   async cambiarEstado(): Promise<void> {
     this.mensaje.set('');
     this.error.set('');
+    const motivoEstado = this.nuevoEstado === 'rechazado' ? this.motivo.trim() : undefined;
+    if (this.nuevoEstado === 'rechazado' && !motivoEstado) {
+      this.error.set('Indica el motivo del rechazo antes de guardar.');
+      return;
+    }
     try {
-      await this.ticketSvc.actualizarEstado(this.id(), this.nuevoEstado).toPromise();
+      await this.ticketSvc.actualizarEstado(this.id(), this.nuevoEstado, motivoEstado).toPromise();
       this.mensaje.set('Estado actualizado correctamente.');
       await this.cargar();
     } catch (e: any) {

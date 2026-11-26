@@ -52,6 +52,14 @@ const responderCsat = async (req, res) => {
       [ticketId, clienteId, puntuacion, comentarioAnonimizado]
     );
 
+    // La respuesta del cliente confirma la solución y cierra el ticket.
+    if (ticket[0].estado === 'resuelto') {
+      await pool.query(
+        `UPDATE tickets SET estado = 'cerrado', cerrado_el = NOW() WHERE id = ?`,
+        [ticketId]
+      );
+    }
+
     // Auditoría
     await pool.query(
       `INSERT INTO auditoria (usuario_id, accion, detalle) VALUES (?, 'responder_csat', ?)`,

@@ -98,6 +98,12 @@
                 <strong>{{ t.resuelto_el | date: 'dd/MM/yyyy HH:mm' }}</strong>
               </div>
             }
+            @if (t.cerrado_el) {
+              <div class="info-item">
+                <span class="label">Cerrado el</span>
+                <strong>{{ t.cerrado_el | date: 'dd/MM/yyyy HH:mm' }}</strong>
+              </div>
+            }
             @if (t.primer_respuesta_el) {
               <div class="info-item">
                 <span class="label">Primera respuesta</span>
@@ -125,10 +131,15 @@
                 <option value="asignado">Asignado</option>
                 <option value="en_proceso">En proceso</option>
                 <option value="resuelto">Resuelto</option>
-                <option value="cerrado">Cerrado</option>
                 <option value="rechazado">Rechazado</option>
               </select>
             </label>
+            @if (nuevoEstado === 'rechazado') {
+              <label>
+                Motivo del rechazo
+                <input type="text" [(ngModel)]="motivo" name="motivoRechazo" required placeholder="Ej: solicitud duplicada o fuera de alcance" />
+              </label>
+            }
             <button class="btn btn-primary" (click)="cambiarEstado()">Guardar estado</button>
           </div>
 

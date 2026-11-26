@@ -173,14 +173,39 @@ exports.actualizarEstado = async (req, res) => {
     return res.status(400).json({ error: `estado inválido. Valores: ${ESTADOS.join(', ')}` });
   }
 
+  if (estado === 'cerrado') {
+    return res.status(400).json({
+      error: 'Un ticket se cierra cuando el cliente confirma la solución mediante la encuesta CSAT.',
+    });
+  }
+
+  if (estado === 'rechazado' && !motivo?.trim()) {
+    return res.status(400).json({ error: 'Debes indicar el motivo del rechazo.' });
+  }
+
   const [existe] = await pool.query('SELECT id, estado FROM tickets WHERE id = ?', [id]);
   if (existe.length === 0) {
     return res.status(404).json({ error: 'Ticket no encontrado.' });
   }
 
+  const transiciones = {
+    nuevo: ['asignado', 'rechazado'],
+    asignado: ['en_proceso', 'rechazado'],
+    en_proceso: ['resuelto', 'rechazado'],
+    resuelto: ['en_proceso', 'rechazado'],
+    cerrado: [],
+    rechazado: [],
+  };
+  const estadoActual = existe[0].estado;
+  if (estado !== estadoActual && !transiciones[estadoActual].includes(estado)) {
+    return res.status(400).json({
+      error: `No se puede cambiar un ticket de ${estadoActual} a ${estado}.`,
+    });
+  }
+
   const campos = { estado };
   if (estado === 'resuelto') campos.resuelto_el = new Date();
-  if (estado === 'cerrado') campos.cerrado_el = new Date();
+  if (estado === 'en_proceso' && estadoActual === 'resuelto') campos.resuelto_el = null;
   if (motivo) campos.motivo_reasignacion = motivo;
 
   await pool.query('UPDATE tickets SET ? WHERE id = ?', [campos, id]);
@@ -196,7 +221,7 @@ exports.actualizarEstado = async (req, res) => {
 
   await pool.query(
     `INSERT INTO auditoria (usuario_id, accion, detalle) VALUES (?, 'actualizar_estado', ?)`,
-    [req.usuario.id, `Ticket #${id} de ${existe[0].estado} a ${estado}`]
+    [req.usuario.id, `Ticket #${id} de ${estadoActual} a ${estado}${motivo ? `: ${motivo}` : ''}`]
   );
 
   return res.json({ mensaje: 'Estado actualizado.', nuevoEstado: estado });
@@ -217,9 +242,12 @@ exports.reasignar = async (req, res) => {
     return res.status(400).json({ error: 'Analista no válido.' });
   }
 
-  const [existe] = await pool.query('SELECT id, analista_id FROM tickets WHERE id = ?', [id]);
+  const [existe] = await pool.query('SELECT id, analista_id, estado FROM tickets WHERE id = ?', [id]);
   if (existe.length === 0) {
     return res.status(404).json({ error: 'Ticket no encontrado.' });
+  }
+  if (['cerrado', 'rechazado'].includes(existe[0].estado)) {
+    return res.status(400).json({ error: 'No se puede reasignar un ticket cerrado o rechazado.' });
   }
 
   await pool.query(
