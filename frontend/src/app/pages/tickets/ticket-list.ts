@@ -39,6 +39,8 @@ export class TicketListComponent {
     { v: 'asignado', t: 'Asignados' },
     { v: 'en_proceso', t: 'En proceso' },
     { v: 'resuelto', t: 'Resueltos' },
+    { v: 'cerrado', t: 'Cerrados' },
+    { v: 'rechazado', t: 'Rechazados' },
   ];
 
   constructor() {
