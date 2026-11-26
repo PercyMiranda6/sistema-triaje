@@ -34,14 +34,29 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
   gap: 1.15rem;
-  align-items: start;
+  align-items: stretch;
 }
 
 /* --- Tarjeta --- */
 .ticket-list .receipt {
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  min-height: 360px;
   transition: transform 0.16s cubic-bezier(0.2, 0.7, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
 }
+
+.ticket-list .receipt-head { min-height: 92px; }
+
+.ticket-list .receipt-title {
+  display: -webkit-box;
+  min-height: 2.625rem;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.ticket-list .receipt-rows { flex: 1; }
 
 .ticket-list .receipt:hover {
   transform: translateY(-3px);

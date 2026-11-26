@@ -20,7 +20,7 @@ export class TicketListComponent {
   ticketsSignal = signal<Ticket[]>([]);
   total = signal(0);
   page = signal(1);
-  pageSize = 10;
+  pageSize = 12;
 
   filtroEstado = '';
   filtroSeveridad = '';
