@@ -3,7 +3,7 @@
    ============================================================ */
 .admin-grid {
   display: grid;
-  grid-template-columns: minmax(300px, 0.8fr) 1.2fr;
+  grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
   gap: 1.15rem;
   align-items: start;
 }
