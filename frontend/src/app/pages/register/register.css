@@ -22,7 +22,23 @@
   text-align: left;
 }
 
-.auth-card-single .auth-mark { margin-bottom: 1.1rem; }
+.auth-card-single .auth-mark {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 1rem;
+  border-radius: 16px;
+  background: linear-gradient(150deg, var(--accent), #a8280f);
+  box-shadow: 0 10px 26px -10px rgba(220, 67, 38, 0.95);
+}
+
+.auth-card-single .auth-mark svg { width: 32px; height: 32px; }
 .auth-card-single h2 { margin-bottom: 0.3rem; }
 .auth-card-single .muted { margin-bottom: 1.4rem; }
 .auth-card-single label { text-align: left; }
+.auth-card-single > .text-center {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line-soft);
+}

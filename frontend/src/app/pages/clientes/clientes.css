@@ -1,6 +1,6 @@
 .admin-grid {
   display: grid;
-  grid-template-columns: minmax(420px, 1.2fr) minmax(300px, 0.8fr);
+  grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr);
   gap: 1.15rem;
   align-items: start;
 }
@@ -10,6 +10,7 @@
 .form-stack label { margin-bottom: 0.95rem; }
 .acciones-cell { white-space: nowrap; text-align: right; }
 .acciones-cell .btn { margin-left: 0.35rem; }
+.table-wrap td { overflow-wrap: anywhere; }
 .btn-danger { background: var(--danger-soft); color: var(--danger); border-color: #f1c4ba; }
 .btn-danger:hover:not(:disabled) { background: #f8d8d2; }
 .form-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }

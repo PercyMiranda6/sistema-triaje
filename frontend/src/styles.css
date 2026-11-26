@@ -103,7 +103,7 @@ a:hover { text-decoration: underline; }
 
 /* ---------- Page head ---------- */
 app-navbar, app-login, app-register, app-ticket-list, app-ticket-form,
-app-ticket-detail, app-dashboard, app-analistas {
+app-ticket-detail, app-dashboard, app-analistas, app-clientes {
   display: block;
 }
 
