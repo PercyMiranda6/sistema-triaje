@@ -110,6 +110,12 @@
                 <strong>{{ t.comentario_resolucion }}</strong>
               </div>
             }
+            @if (t.indicadores_frustracion?.length) {
+              <div class="info-item info-item-wide">
+                <span class="label">Indicadores detectados</span>
+                <strong>{{ t.indicadores_frustracion?.join(' · ') }}</strong>
+              </div>
+            }
             @if (t.primer_respuesta_el) {
               <div class="info-item">
                 <span class="label">Primera respuesta</span>

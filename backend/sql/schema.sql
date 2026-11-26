@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS tickets (
   resuelto_el TIMESTAMP NULL,
   cerrado_el TIMESTAMP NULL,
   comentario_resolucion TEXT NULL,
+  indicadores_frustracion TEXT NULL,
   PRIMARY KEY (id),
   KEY idx_estado (estado),
   KEY idx_severidad (severidad),
