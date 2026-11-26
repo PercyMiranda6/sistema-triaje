@@ -32,6 +32,7 @@ export interface Ticket {
   proveedor_ia?: string | null;
   motivo_reasignacion?: string | null;
   comentario_resolucion?: string | null;
+  indicadores_frustracion?: string[] | null;
 }
 
 export interface Paginacion {

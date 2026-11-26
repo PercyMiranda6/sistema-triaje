@@ -5,20 +5,25 @@ const { pool } = require('./db');
  * El esquema principal conserva la misma columna para instalaciones nuevas.
  */
 async function ejecutarMigraciones() {
-  const [columnas] = await pool.query(
-    `SELECT COLUMN_NAME
-       FROM information_schema.COLUMNS
-      WHERE TABLE_SCHEMA = DATABASE()
-        AND TABLE_NAME = 'tickets'
-        AND COLUMN_NAME = 'comentario_resolucion'`
-  );
+  const columnasNuevas = [
+    { nombre: 'comentario_resolucion', sql: 'ADD COLUMN comentario_resolucion TEXT NULL AFTER cerrado_el', mensaje: 'comentario de resolución' },
+    { nombre: 'indicadores_frustracion', sql: 'ADD COLUMN indicadores_frustracion TEXT NULL AFTER comentario_resolucion', mensaje: 'indicadores de frustración' },
+  ];
 
-  if (columnas.length === 0) {
-    await pool.query(
-      `ALTER TABLE tickets
-       ADD COLUMN comentario_resolucion TEXT NULL AFTER cerrado_el`
+  for (const columna of columnasNuevas) {
+    const [existente] = await pool.query(
+      `SELECT COLUMN_NAME
+         FROM information_schema.COLUMNS
+        WHERE TABLE_SCHEMA = DATABASE()
+          AND TABLE_NAME = 'tickets'
+          AND COLUMN_NAME = ?`,
+      [columna.nombre]
     );
-    console.log('[DB] Migración aplicada: comentario de resolución.');
+
+    if (existente.length === 0) {
+      await pool.query(`ALTER TABLE tickets ${columna.sql}`);
+      console.log(`[DB] Migración aplicada: ${columna.mensaje}.`);
+    }
   }
 }
 

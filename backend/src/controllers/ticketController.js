@@ -5,6 +5,17 @@ const { calcularPriorityScore } = require('../utils/priority');
 const { SLA_HORAS, CATEGORIAS, SEVERIDADES, SENTIMIENTOS, ESTADOS } = require('../utils/constants');
 const { buscarAnalistaIdoneo } = require('../services/routingService');
 
+function prepararTicket(ticket) {
+  if (typeof ticket.indicadores_frustracion === 'string') {
+    try {
+      ticket.indicadores_frustracion = JSON.parse(ticket.indicadores_frustracion);
+    } catch {
+      ticket.indicadores_frustracion = [];
+    }
+  }
+  return ticket;
+}
+
 // --- Crear ticket + ejecutar triaje automático (RF02-RF06) ---
 exports.crearTicket = async (req, res) => {
   const { asunto, descripcion } = req.body;
@@ -32,12 +43,13 @@ exports.crearTicket = async (req, res) => {
     `INSERT INTO tickets
        (codigo, cliente_id, asunto, descripcion_original, descripcion_anonimizada,
         categoria, severidad, sentimiento, score_frustracion, priority_score,
-        proveedor_ia, sla_horas, estado)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'nuevo')`,
+        proveedor_ia, sla_horas, indicadores_frustracion, estado)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'nuevo')`,
     [
       codigo, clienteId, asunto, descripcion, textoAnonimizado,
       resultado.categoria, resultado.severidad, resultado.sentimiento,
       resultado.score_frustracion, priorityScore, proveedor, slaHoras,
+      JSON.stringify(resultado.indicadores_frustracion || []),
     ]
   );
 
@@ -77,6 +89,7 @@ exports.crearTicket = async (req, res) => {
       sla_horas: slaHoras,
       proveedor_ia: proveedor,
       latencia_ms: latenciaMs,
+      indicadores_frustracion: resultado.indicadores_frustracion || [],
       analista_asignado: analista
         ? { id: analista.id, nombre: analista.nombre, email: analista.email }
         : null,
@@ -120,6 +133,7 @@ exports.listarTickets = async (req, res) => {
       LIMIT ? OFFSET ?`,
     [...params, tam, offset]
   );
+  filas.forEach(prepararTicket);
 
   const [[{ total }]] = await pool.query(
     `SELECT COUNT(*) AS total FROM tickets t ${condicion}`,
@@ -155,6 +169,7 @@ exports.obtenerTicket = async (req, res) => {
   }
 
   const ticket = filas[0];
+  prepararTicket(ticket);
 
   // Los clientes solo pueden ver sus propios tickets
   if (req.usuario.rol === 'cliente' && ticket.cliente_id !== req.usuario.id) {
