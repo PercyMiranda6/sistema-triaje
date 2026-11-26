@@ -3,7 +3,11 @@ function noEncontrado(req, res) {
 }
 
 function errorGlobal(err, req, res, next) { // eslint-disable-line no-unused-vars
-  console.error('[ERROR]', err);
+  console.error('[ERROR]', {
+    code: err.code || 'INTERNAL_ERROR',
+    status: err.status || 500,
+    ...(process.env.NODE_ENV !== 'production' ? { message: err.message } : {}),
+  });
 
   if (err.code === 'ER_DUP_ENTRY') {
     return res.status(409).json({ error: 'Registro duplicado: el dato ya existe.' });

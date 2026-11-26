@@ -53,6 +53,12 @@
             <span class="k">Motor de IA</span>
             <span class="v">{{ t.proveedor_ia || '—' }}</span>
           </div>
+          <div class="receipt-row">
+            <span class="k">Confianza</span>
+            <span class="v" [class.confianza-baja]="(t.confianza_clasificacion || 0) < 0.70">
+              {{ t.confianza_clasificacion !== null && t.confianza_clasificacion !== undefined ? ((t.confianza_clasificacion * 100).toFixed(0) + ' %') : '—' }}
+            </span>
+          </div>
         </div>
 
         <div class="receipt-rule"></div>
@@ -98,6 +104,30 @@
                 <strong>{{ t.resuelto_el | date: 'dd/MM/yyyy HH:mm' }}</strong>
               </div>
             }
+            @if (t.cerrado_el) {
+              <div class="info-item">
+                <span class="label">Cerrado el</span>
+                <strong>{{ t.cerrado_el | date: 'dd/MM/yyyy HH:mm' }}</strong>
+              </div>
+            }
+            @if (t.comentario_resolucion) {
+              <div class="info-item info-item-wide">
+                <span class="label">Comentario de resolución</span>
+                <strong>{{ t.comentario_resolucion }}</strong>
+              </div>
+            }
+            @if (t.indicadores_frustracion?.length) {
+              <div class="info-item info-item-wide">
+                <span class="label">Indicadores detectados</span>
+                <strong>{{ t.indicadores_frustracion?.join(' · ') }}</strong>
+              </div>
+            }
+            @if ((t.confianza_clasificacion || 0) < 0.70) {
+              <div class="info-item info-item-wide revision-alert">
+                <span class="label">Revisión manual sugerida</span>
+                <strong>La confianza de clasificación es baja. Verifica categoría, severidad y sentimiento.</strong>
+              </div>
+            }
             @if (t.primer_respuesta_el) {
               <div class="info-item">
                 <span class="label">Primera respuesta</span>
@@ -125,10 +155,28 @@
                 <option value="asignado">Asignado</option>
                 <option value="en_proceso">En proceso</option>
                 <option value="resuelto">Resuelto</option>
-                <option value="cerrado">Cerrado</option>
                 <option value="rechazado">Rechazado</option>
               </select>
             </label>
+            @if (nuevoEstado === 'resuelto') {
+              <label>
+                Comentario de resolución
+                <textarea
+                  [(ngModel)]="comentarioResolucion"
+                  name="comentarioResolucion"
+                  required
+                  rows="3"
+                  maxlength="1000"
+                  placeholder="Describe qué se hizo para resolver el problema"
+                ></textarea>
+              </label>
+            }
+            @if (nuevoEstado === 'rechazado') {
+              <label>
+                Motivo del rechazo
+                <input type="text" [(ngModel)]="motivo" name="motivoRechazo" required maxlength="1000" placeholder="Ej: solicitud duplicada o fuera de alcance" />
+              </label>
+            }
             <button class="btn btn-primary" (click)="cambiarEstado()">Guardar estado</button>
           </div>
 
@@ -146,12 +194,20 @@
               </label>
               <label>
                 Motivo
-                <input type="text" [(ngModel)]="motivo" name="motivo" placeholder="Ej: corrección de prioridad detectada" />
+                <input type="text" [(ngModel)]="motivo" name="motivo" maxlength="1000" placeholder="Ej: corrección de prioridad detectada" />
               </label>
               <button class="btn btn-outline" (click)="reasignar()" [disabled]="!analistaSeleccionado">Reasignar</button>
             </div>
           }
         </div>
+      </section>
+    }
+
+    @if (auth.esRol('cliente') && (t.estado === 'resuelto' || t.estado === 'cerrado')) {
+      <section class="card reopen-card">
+        <span class="eyebrow">¿El problema continúa?</span>
+        <p>Solicita la reapertura para que el equipo vuelva a revisar tu ticket.</p>
+        <button class="btn btn-outline" (click)="reabrir()">Reabrir ticket</button>
       </section>
     }
 

@@ -1,5 +1,6 @@
 const { pool } = require('../config/db');
 const { anonimizar } = require('../services/piiService');
+const { validarComentario } = require('../utils/commentValidation');
 
 /**
  * POST /api/encuestas/csat
@@ -43,7 +44,9 @@ const responderCsat = async (req, res) => {
     // Anonimizar PII en el comentario (Ley N° 29733)
     let comentarioAnonimizado = null;
     if (comentario && comentario.trim()) {
-      comentarioAnonimizado = anonimizar(comentario).texto;
+      const validacion = validarComentario(comentario, 'El comentario');
+      if (validacion.error) return res.status(400).json({ error: validacion.error });
+      comentarioAnonimizado = anonimizar(validacion.valor).texto;
     }
 
     await pool.query(
@@ -51,6 +54,14 @@ const responderCsat = async (req, res) => {
        VALUES (?, ?, ?, ?)`,
       [ticketId, clienteId, puntuacion, comentarioAnonimizado]
     );
+
+    // La respuesta del cliente confirma la solución y cierra el ticket.
+    if (ticket[0].estado === 'resuelto') {
+      await pool.query(
+        `UPDATE tickets SET estado = 'cerrado', cerrado_el = NOW() WHERE id = ?`,
+        [ticketId]
+      );
+    }
 
     // Auditoría
     await pool.query(
@@ -187,7 +198,9 @@ const responderNps = async (req, res) => {
 
     let comentarioAnonimizado = null;
     if (comentario && comentario.trim()) {
-      comentarioAnonimizado = anonimizar(comentario).texto;
+      const validacion = validarComentario(comentario, 'El comentario');
+      if (validacion.error) return res.status(400).json({ error: validacion.error });
+      comentarioAnonimizado = anonimizar(validacion.valor).texto;
     }
 
     await pool.query(

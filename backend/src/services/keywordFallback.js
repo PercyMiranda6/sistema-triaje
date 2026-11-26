@@ -47,6 +47,13 @@ const SENTIMIENTO_CLAVES = {
   // Neutro por defecto
 };
 
+const INDICADORES_FRUSTRACION = {
+  bloqueo: ['no puedo trabajar', 'no puedo continuar', 'todo el sistema', 'nadie puede trabajar'],
+  espera: ['desde hace horas', 'desde ayer', 'desde el lunes', 'llevo dias', 'nadie responde'],
+  molestia: ['molesto', 'frustrado', 'harto', 'enojado', 'inaceptable', 'desesperado', 'basta'],
+  repeticion: ['otra vez', 'siempre', 'nunca funciona', 'por tercera vez'],
+};
+
 function puntuar(conteos) {
   return Object.entries(conteos)
     .filter(([, n]) => n > 0)
@@ -91,6 +98,11 @@ function analizarPorClaves(texto) {
   const nivelSev = sevElegida === 'Critica' ? 0.1 : sevElegida === 'Alta' ? 0.06 : 0;
   const score = Math.min(1, Math.round((base + nivelSev) * 100) / 100);
 
+  const indicadores = Object.entries(INDICADORES_FRUSTRACION)
+    .filter(([, claves]) => claves.some((k) => t.includes(normalizar(k))))
+    .map(([grupo]) => ({ bloqueo: 'bloqueo laboral', espera: 'espera prolongada', molestia: 'lenguaje de molestia', repeticion: 'incidencia repetida' }[grupo]));
+  if (exclamaciones > 0) indicadores.push('uso de exclamaciones');
+
   const palabras = texto.split(/\s+/).slice(0, 15).join(' ');
   const resumen_ejecutivo = palabras.length > 15 ? palabras.split(' ').slice(0, 15).join(' ') : palabras;
 
@@ -99,6 +111,8 @@ function analizarPorClaves(texto) {
     severidad: sevElegida,
     sentimiento,
     score_frustracion: score,
+    indicadores_frustracion: indicadores,
+    confianza_clasificacion: 0.55,
     resumen_ejecutivo,
   };
 }

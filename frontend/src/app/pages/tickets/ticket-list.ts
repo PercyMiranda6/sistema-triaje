@@ -20,7 +20,7 @@ export class TicketListComponent {
   ticketsSignal = signal<Ticket[]>([]);
   total = signal(0);
   page = signal(1);
-  pageSize = 10;
+  pageSize = 12;
 
   filtroEstado = '';
   filtroSeveridad = '';
@@ -39,6 +39,9 @@ export class TicketListComponent {
     { v: 'asignado', t: 'Asignados' },
     { v: 'en_proceso', t: 'En proceso' },
     { v: 'resuelto', t: 'Resueltos' },
+    { v: 'cerrado', t: 'Cerrados' },
+    { v: 'rechazado', t: 'Rechazados' },
+    { v: 'reabierto', t: 'Reabiertos' },
   ];
 
   constructor() {

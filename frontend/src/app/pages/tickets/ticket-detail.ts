@@ -27,6 +27,7 @@ export class TicketDetailComponent implements OnInit {
   nuevoEstado = '';
   analistaSeleccionado = 0;
   motivo = '';
+  comentarioResolucion = '';
   mensaje = signal('');
   error = signal('');
   analistasCargados = signal(false);
@@ -55,6 +56,7 @@ export class TicketDetailComponent implements OnInit {
       ]);
       this.ticket.set(t.ticket);
       this.nuevoEstado = t.ticket.estado;
+      this.comentarioResolucion = t.ticket.comentario_resolucion || '';
       this.analistas.set(a.analistas);
       this.analistasCargados.set(true);
 
@@ -97,12 +99,34 @@ export class TicketDetailComponent implements OnInit {
   async cambiarEstado(): Promise<void> {
     this.mensaje.set('');
     this.error.set('');
+    const motivoEstado = this.nuevoEstado === 'rechazado' ? this.motivo.trim() : undefined;
+    const comentario = this.nuevoEstado === 'resuelto' ? this.comentarioResolucion.trim() : undefined;
+    if (this.nuevoEstado === 'rechazado' && !motivoEstado) {
+      this.error.set('Indica el motivo del rechazo antes de guardar.');
+      return;
+    }
+    if (this.nuevoEstado === 'resuelto' && !comentario) {
+      this.error.set('Describe la solución aplicada antes de guardar.');
+      return;
+    }
     try {
-      await this.ticketSvc.actualizarEstado(this.id(), this.nuevoEstado).toPromise();
+      await this.ticketSvc.actualizarEstado(this.id(), this.nuevoEstado, motivoEstado, comentario).toPromise();
       this.mensaje.set('Estado actualizado correctamente.');
       await this.cargar();
     } catch (e: any) {
       this.error.set(e?.error?.error || 'No se pudo actualizar.');
+    }
+  }
+
+  async reabrir(): Promise<void> {
+    this.mensaje.set('');
+    this.error.set('');
+    try {
+      await firstValueFrom(this.ticketSvc.reabrir(this.id()));
+      this.mensaje.set('Ticket reabierto. El equipo volverá a revisarlo.');
+      await this.cargar();
+    } catch (e: any) {
+      this.error.set(e?.error?.error || 'No se pudo reabrir el ticket.');
     }
   }
 

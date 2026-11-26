@@ -55,6 +55,11 @@ async function patch(ruta, cuerpo, token) {
 
 console.log('\n=== E2E Sistema de Triaje ===\n');
 
+const adminEmail = process.env.TEST_ADMIN_EMAIL || process.env.SEED_ADMIN_EMAIL;
+const adminPassword = process.env.TEST_ADMIN_PASSWORD || process.env.SEED_ADMIN_PASSWORD;
+const analistaEmail = process.env.TEST_ANALISTA_EMAIL || process.env.SEED_ANA_EMAIL;
+const analistaPassword = process.env.TEST_ANALISTA_PASSWORD || process.env.SEED_ANA_PASSWORD;
+
 // 1. Login cliente
 const emailCliente = `cliente_e2e_${Date.now()}@empresa.com`;
 const reg = await post('/auth/registrar', { nombre: 'Cliente E2E', email: emailCliente, password: 'Clave123!' }, null);
@@ -62,12 +67,12 @@ check('Registro de cliente', reg.status === 201 && reg.data.token, `status=${reg
 const tokenCliente = reg.data.token;
 
 // 2. Login admin
-const loginAdmin = await post('/auth/login', { email: 'admin@triaje.com', password: 'Admin123!' }, null);
+const loginAdmin = await post('/auth/login', { email: adminEmail, password: adminPassword }, null);
 check('Login administrador', loginAdmin.status === 200 && loginAdmin.data.token);
 const tokenAdmin = loginAdmin.data.token;
 
 // 3. Login analista
-const loginAna = await post('/auth/login', { email: 'ana.torres@empresa.com', password: 'Analista123!' }, null);
+const loginAna = await post('/auth/login', { email: analistaEmail, password: analistaPassword }, null);
 check('Login analista', loginAna.status === 200 && loginAna.data.token);
 const tokenAna = loginAna.data.token;
 

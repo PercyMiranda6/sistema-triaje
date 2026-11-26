@@ -34,6 +34,7 @@ import { EncuestaService } from '../../services/encuesta.service';
           [(ngModel)]="comentario"
           placeholder="Comentario (opcional)"
           rows="3"
+          maxlength="1000"
           class="textarea"
         ></textarea>
 

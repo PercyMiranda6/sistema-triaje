@@ -6,6 +6,7 @@ const assert = require('node:assert/strict');
 const { calcularPriorityScore, etiquetaPrioridad } = require('../src/utils/priority');
 const { anonimizar } = require('../src/services/piiService');
 const { analizarPorClaves } = require('../src/services/keywordFallback');
+const { evaluarFrustracion } = require('../src/services/frustrationRules');
 
 let ok = 0;
 let fail = 0;
@@ -57,6 +58,14 @@ test('Fallback clasifica una incidencia de red crítica y frustrada', () => {
   assert.equal(resultado.categoria, 'Redes');
   assert.equal(resultado.severidad, 'Critica');
   assert.equal(resultado.sentimiento, 'Frustrado');
+  assert.ok(resultado.indicadores_frustracion.length >= 2);
+});
+
+test('Reglas heurísticas detectan señales explicables de frustración', () => {
+  const resultado = evaluarFrustracion('Llevo horas esperando, nadie responde y no puedo trabajar!!!');
+  assert.ok(resultado.score >= 0.7);
+  assert.equal(resultado.impactoAlto, true);
+  assert.ok(resultado.indicadores.includes('espera prolongada'));
 });
 
 console.log(`\n=== Resultado unitarias: ${ok} OK, ${fail} FAIL ===\n`);

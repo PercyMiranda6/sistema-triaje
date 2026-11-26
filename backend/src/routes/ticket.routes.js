@@ -5,6 +5,7 @@ const {
   obtenerTicket,
   actualizarEstado,
   reasignar,
+  reabrirTicket,
 } = require('../controllers/ticketController');
 const { autenticar, autorizar } = require('../middleware/auth');
 
@@ -18,6 +19,9 @@ router.get('/', autenticar, listarTickets);
 
 // Detalle
 router.get('/:id', autenticar, obtenerTicket);
+
+// El cliente puede solicitar la reapertura de un ticket resuelto o cerrado.
+router.post('/:id/reabrir', autenticar, reabrirTicket);
 
 // Cambio de estado (analista/admin)
 router.patch('/:id/estado', autenticar, autorizar('analista', 'administrador'), actualizarEstado);

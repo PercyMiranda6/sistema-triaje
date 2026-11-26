@@ -4,7 +4,7 @@ const SEVERIDADES = ['Baja', 'Media', 'Alta', 'Critica'];
 
 const SENTIMIENTOS = ['Positivo', 'Neutro', 'Frustrado'];
 
-const ESTADOS = ['nuevo', 'asignado', 'en_proceso', 'resuelto', 'cerrado', 'rechazado'];
+const ESTADOS = ['nuevo', 'asignado', 'en_proceso', 'resuelto', 'cerrado', 'rechazado', 'reabierto'];
 
 const ROLES = ['cliente', 'analista', 'administrador'];
 
@@ -28,6 +28,7 @@ const PROMPT_FORMATO =
     sentimiento: 'Debe ser EXACTAMENTE uno de estos valores: "Positivo", "Neutro", "Frustrado"',
     score_frustracion: 'Numero float de 0.0 (Calmo) a 1.0 (Muy Frustrado)',
     resumen_ejecutivo: 'Breve sintesis del problema en 15 palabras',
+    indicadores_frustracion: 'Array de hasta 5 señales textuales que justifican la frustración',
   }) +
   '. IMPORTANTE: en los campos "categoria", "severidad" y "sentimiento" debes copiar literalmente uno de los ' +
   'valores permitidos, sin agregar sinonimos, sin prefijos y sin texto adicional (por ejemplo, si el problema es ' +

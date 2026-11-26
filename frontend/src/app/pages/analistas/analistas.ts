@@ -1,9 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
-import { TicketService } from '../../services/ticket.service';
+import { UserService } from '../../services/user.service';
 import { Usuario } from '../../models';
-import { API_BASE } from '../../api.config';
 
 @Component({
   selector: 'app-analistas',
@@ -12,7 +11,7 @@ import { API_BASE } from '../../api.config';
   styleUrl: './analistas.css',
 })
 export class AnalistasComponent {
-  private tickets = inject(TicketService);
+  private usuarios = inject(UserService);
 
   analistas = signal<Usuario[]>([]);
   cargando = signal(true);
@@ -23,6 +22,7 @@ export class AnalistasComponent {
   email = '';
   password = '';
   especialidad = '';
+  editandoId: number | null = null;
 
   constructor() {
     this.cargar();
@@ -31,7 +31,7 @@ export class AnalistasComponent {
   async cargar(): Promise<void> {
     this.cargando.set(true);
     try {
-      const r = await firstValueFrom(this.tickets.listarAnalistas());
+      const r = await firstValueFrom(this.usuarios.listarAnalistas());
       this.analistas.set(r.analistas);
     } catch (e: any) {
       this.error.set(e?.error?.error || 'No se pudieron cargar los analistas.');
@@ -44,27 +44,49 @@ export class AnalistasComponent {
     this.error.set('');
     this.mensaje.set('');
     try {
-      await fetch(`${API_BASE}/usuarios/analistas`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
-        body: JSON.stringify({
-          nombre: this.nombre,
-          email: this.email,
-          password: this.password,
-          especialidad: this.especialidad || null,
-        }),
-      }).then((r) => {
-        if (!r.ok) throw new Error();
-        return r.json();
-      });
-      this.mensaje.set('Analista creado correctamente.');
-      this.nombre = '';
-      this.email = '';
-      this.password = '';
-      this.especialidad = '';
+      const datos = { nombre: this.nombre, email: this.email, password: this.password, especialidad: this.especialidad || null };
+      if (this.editandoId) {
+        await firstValueFrom(this.usuarios.actualizar(this.editandoId, datos));
+        this.mensaje.set('Analista actualizado correctamente.');
+      } else {
+        await firstValueFrom(this.usuarios.crearAnalista(datos));
+        this.mensaje.set('Analista creado correctamente.');
+      }
+      this.limpiarFormulario();
       await this.cargar();
-    } catch {
-      this.error.set('No se pudo crear el analista.');
+    } catch (e: any) {
+      this.error.set(e?.error?.error || 'No se pudo guardar el analista.');
     }
+  }
+
+  editar(a: Usuario): void {
+    this.editandoId = a.id;
+    this.nombre = a.nombre;
+    this.email = a.email;
+    this.password = '';
+    this.especialidad = a.especialidad || '';
+    this.mensaje.set('');
+    this.error.set('');
+  }
+
+  async eliminar(a: Usuario): Promise<void> {
+    if (!confirm(`¿Desactivar a ${a.nombre}?`)) return;
+    try {
+      await firstValueFrom(this.usuarios.eliminar(a.id));
+      this.mensaje.set('Analista desactivado correctamente.');
+      await this.cargar();
+    } catch (e: any) {
+      this.error.set(e?.error?.error || 'No se pudo desactivar el analista.');
+    }
+  }
+
+  cancelarEdicion(): void { this.limpiarFormulario(); }
+
+  private limpiarFormulario(): void {
+    this.editandoId = null;
+    this.nombre = '';
+    this.email = '';
+    this.password = '';
+    this.especialidad = '';
   }
 }

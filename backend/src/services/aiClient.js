@@ -7,6 +7,7 @@
 const { PROVIDER, PROMPT_SYSTEM, PROMPT_FORMATO } = require('../utils/constants');
 const { anonimizar } = require('./piiService');
 const { analizarPorClaves } = require('./keywordFallback');
+const { evaluarFrustracion } = require('./frustrationRules');
 
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 const GEMINI_URL = (model, key) =>
@@ -86,6 +87,40 @@ function validarTriage(obj) {
     sentimiento,
     score_frustracion: Math.min(1, Math.max(0, score)),
     resumen_ejecutivo: String(obj.resumen_ejecutivo || '').slice(0, 300),
+    indicadores_frustracion: Array.isArray(obj.indicadores_frustracion)
+      ? obj.indicadores_frustracion.filter((x) => typeof x === 'string').slice(0, 6)
+      : [],
+  };
+}
+
+function aplicarCriteriosHibridos(resultado, texto) {
+  const reglas = evaluarFrustracion(texto);
+  const scoreModelo = Number(resultado.score_frustracion) || 0;
+  const scoreFinal = Math.min(1, Math.max(0, Math.round((scoreModelo * 0.7 + reglas.score * 0.3) * 100) / 100));
+  const indicadores = [...new Set([...(resultado.indicadores_frustracion || []), ...reglas.indicadores])].slice(0, 6);
+
+  let sentimiento = resultado.sentimiento;
+  if (reglas.score >= 0.8 && reglas.indicadores.length >= 2 && sentimiento === 'Neutro') {
+    sentimiento = 'Frustrado';
+  }
+
+  let severidad = resultado.severidad;
+  if (reglas.bloqueoCritico) severidad = 'Critica';
+  else if (reglas.impactoAlto && severidad === 'Baja') severidad = 'Alta';
+
+  const acuerdoFrustracion = 1 - Math.abs(scoreModelo - reglas.score);
+  const confianza = Math.min(
+    0.98,
+    Math.max(0.35, 0.55 + acuerdoFrustracion * 0.25 + Math.min(indicadores.length, 3) * 0.05)
+  );
+
+  return {
+    ...resultado,
+    severidad,
+    sentimiento,
+    score_frustracion: scoreFinal,
+    indicadores_frustracion: indicadores,
+    confianza_clasificacion: Math.round(confianza * 100) / 100,
   };
 }
 
@@ -180,7 +215,7 @@ async function ejecutarTriaje({ asunto, descripcion }) {
   // 3) Fallback local por palabras clave (RNF03)
   if (!resultado) {
     const motivo = error
-      ? `error de API: ${error.message}`
+      ? `error de API (${error.name || 'proveedor externo'})`
       : respuestaBruta
         ? 'la respuesta del LLM no cumple el esquema de salida esperado'
         : 'no hay proveedor de IA configurado';
@@ -188,6 +223,8 @@ async function ejecutarTriaje({ asunto, descripcion }) {
     resultado = analizarPorClaves(textoAnonimizado);
     proveedor = PROVIDER.fallback;
   }
+
+  resultado = aplicarCriteriosHibridos(resultado, textoAnonimizado);
 
   const latenciaMs = Date.now() - inicio;
 

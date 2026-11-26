@@ -4,12 +4,26 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const { testConnection } = require('./config/db');
+const { ejecutarMigraciones } = require('./config/migrations');
 const { noEncontrado, errorGlobal } = require('./middleware/errorHandler');
 
 const app = express();
 
+const origenesPermitidos = (process.env.CORS_ORIGINS || 'https://sistema-triaje-frontend.onrender.com')
+  .split(',')
+  .map((origen) => origen.trim())
+  .filter(Boolean);
+if (process.env.NODE_ENV !== 'production') {
+  origenesPermitidos.push('http://localhost:4200', 'http://127.0.0.1:4200');
+}
+
 app.use(helmet());
-app.use(cors());
+app.use(cors({
+  origin(origen, callback) {
+    if (!origen || origenesPermitidos.includes(origen)) return callback(null, true);
+    return callback(new Error('Origen CORS no permitido.'));
+  },
+}));
 app.use(express.json({ limit: '1mb' }));
 
 // Rutas
@@ -44,6 +58,7 @@ async function iniciar() {
     await testConnection();
     console.log('[DB] Conexión a MySQL establecida.');
 
+    await ejecutarMigraciones();
     await require('./seed')();
 
     app.listen(PORT, '0.0.0.0', () => {

@@ -13,7 +13,7 @@ async function buscarAnalistaIdoneo(categoria) {
     `SELECT u.id, u.nombre, u.email,
             (SELECT COUNT(*) FROM tickets t
               WHERE t.analista_id = u.id
-                AND t.estado IN ('asignado','en_proceso','nuevo')) AS carga
+                AND t.estado IN ('asignado','en_proceso','nuevo','reabierto')) AS carga
        FROM usuarios u
       WHERE u.rol = 'analista' AND u.activo = 1
       HAVING carga < ?
@@ -27,7 +27,7 @@ async function buscarAnalistaIdoneo(categoria) {
     `SELECT u.id, u.nombre, u.email,
             (SELECT COUNT(*) FROM tickets t
               WHERE t.analista_id = u.id
-                AND t.estado IN ('asignado','en_proceso','nuevo')) AS carga
+                AND t.estado IN ('asignado','en_proceso','nuevo','reabierto')) AS carga
        FROM usuarios u
       WHERE u.rol = 'analista' AND u.activo = 1 AND u.especialidad = ?
       HAVING carga < ?

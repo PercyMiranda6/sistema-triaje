@@ -2,6 +2,10 @@ node_modules/
 .env
 dist/
 *.log
+sistema_triaje_local.sql
+docs/evidencias/**/token*.txt
+docs/evidencias/**/tokens_por_rol.json
+frontend/public/_cap_*.html
 .DS_Store
 Thumbs.db
 # Evidencia generada localmente (se regenera ejecutando las pruebas)

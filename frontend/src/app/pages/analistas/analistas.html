@@ -16,8 +16,41 @@
 
   <div class="admin-grid">
     <section class="card">
-      <span class="eyebrow">Alta de especialista</span>
-      <h2>Nuevo analista</h2>
+      <span class="eyebrow">Planta de soporte</span>
+      <h2>Analistas registrados</h2>
+      @if (cargando()) {
+        <p class="muted">Cargando…</p>
+      } @else {
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Analista</th><th>Especialidad</th><th>Carga</th><th>Acciones</th></tr>
+            </thead>
+            <tbody>
+              @for (a of analistas(); track a.id) {
+                <tr>
+                  <td><strong>{{ a.nombre }}</strong><small>{{ a.email }}</small></td>
+                  <td><span class="badge badge-neutro">{{ a.especialidad || 'General' }}</span></td>
+                  <td>
+                    @if ((a.carga_activa ?? 0) >= 20) {
+                      <span class="badge badge-critica">Saturado</span>
+                    } @else { <span class="mono">{{ a.carga_activa ?? 0 }} / 20</span> }
+                  </td>
+                  <td class="acciones-cell">
+                    <button class="btn btn-outline btn-sm" type="button" (click)="editar(a)">Editar</button>
+                    <button class="btn btn-danger btn-sm" type="button" (click)="eliminar(a)">Eliminar</button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+
+    <section class="card">
+      <span class="eyebrow">{{ editandoId ? 'Edición de especialista' : 'Alta de especialista' }}</span>
+      <h2>{{ editandoId ? 'Editar analista' : 'Nuevo analista' }}</h2>
       <form class="form-stack" (ngSubmit)="crear()">
         <label>
           Nombre
@@ -28,8 +61,8 @@
           <input type="email" [(ngModel)]="email" name="email" required placeholder="ana@empresa.com" />
         </label>
         <label>
-          Contraseña
-          <input type="text" [(ngModel)]="password" name="password" required placeholder="Clave temporal" />
+          Contraseña {{ editandoId ? '(opcional)' : '' }}
+          <input type="password" [(ngModel)]="password" name="password" [required]="!editandoId" minlength="8" placeholder="Mínimo 8 caracteres" />
         </label>
         <label>
           Especialidad
@@ -42,43 +75,11 @@
             <option value="Base de Datos">Base de Datos</option>
           </select>
         </label>
-        <button class="btn btn-accent" type="submit">Crear analista</button>
-      </form>
-    </section>
-
-    <section class="card">
-      <span class="eyebrow">Planta de soporte</span>
-      <h2>Analistas registrados</h2>
-      @if (cargando()) {
-        <p class="muted">Cargando…</p>
-      } @else {
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Analista</th>
-                <th>Especialidad</th>
-                <th>Carga activa</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (a of analistas(); track a.id) {
-                <tr>
-                  <td>{{ a.nombre }}</td>
-                  <td><span class="badge badge-neutro">{{ a.especialidad || 'General' }}</span></td>
-                  <td>
-                    @if ((a.carga_activa ?? 0) >= 20) {
-                      <span class="badge badge-critica">Saturado</span>
-                    } @else {
-                      <span class="mono">{{ a.carga_activa ?? 0 }} / 20</span>
-                    }
-                  </td>
-                </tr>
-              }
-            </tbody>
-          </table>
+        <div class="form-actions">
+          <button class="btn btn-accent" type="submit">{{ editandoId ? 'Guardar cambios' : 'Crear analista' }}</button>
+          @if (editandoId) { <button class="btn btn-outline" type="button" (click)="cancelarEdicion()">Cancelar</button> }
         </div>
-      }
+      </form>
     </section>
   </div>
 </div>

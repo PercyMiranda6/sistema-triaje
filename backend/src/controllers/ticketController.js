@@ -4,6 +4,21 @@ const { ejecutarTriaje } = require('../services/aiClient');
 const { calcularPriorityScore } = require('../utils/priority');
 const { SLA_HORAS, CATEGORIAS, SEVERIDADES, SENTIMIENTOS, ESTADOS } = require('../utils/constants');
 const { buscarAnalistaIdoneo } = require('../services/routingService');
+const { validarComentario } = require('../utils/commentValidation');
+
+function prepararTicket(ticket) {
+  if (typeof ticket.indicadores_frustracion === 'string') {
+    try {
+      ticket.indicadores_frustracion = JSON.parse(ticket.indicadores_frustracion);
+    } catch {
+      ticket.indicadores_frustracion = [];
+    }
+  }
+  if (ticket.confianza_clasificacion !== null && ticket.confianza_clasificacion !== undefined) {
+    ticket.confianza_clasificacion = Number(ticket.confianza_clasificacion);
+  }
+  return ticket;
+}
 
 // --- Crear ticket + ejecutar triaje automático (RF02-RF06) ---
 exports.crearTicket = async (req, res) => {
@@ -32,12 +47,14 @@ exports.crearTicket = async (req, res) => {
     `INSERT INTO tickets
        (codigo, cliente_id, asunto, descripcion_original, descripcion_anonimizada,
         categoria, severidad, sentimiento, score_frustracion, priority_score,
-        proveedor_ia, sla_horas, estado)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'nuevo')`,
+        proveedor_ia, sla_horas, indicadores_frustracion, confianza_clasificacion, estado)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'nuevo')`,
     [
       codigo, clienteId, asunto, descripcion, textoAnonimizado,
       resultado.categoria, resultado.severidad, resultado.sentimiento,
       resultado.score_frustracion, priorityScore, proveedor, slaHoras,
+      JSON.stringify(resultado.indicadores_frustracion || []),
+      resultado.confianza_clasificacion,
     ]
   );
 
@@ -77,6 +94,8 @@ exports.crearTicket = async (req, res) => {
       sla_horas: slaHoras,
       proveedor_ia: proveedor,
       latencia_ms: latenciaMs,
+      indicadores_frustracion: resultado.indicadores_frustracion || [],
+      confianza_clasificacion: resultado.confianza_clasificacion,
       analista_asignado: analista
         ? { id: analista.id, nombre: analista.nombre, email: analista.email }
         : null,
@@ -120,6 +139,7 @@ exports.listarTickets = async (req, res) => {
       LIMIT ? OFFSET ?`,
     [...params, tam, offset]
   );
+  filas.forEach(prepararTicket);
 
   const [[{ total }]] = await pool.query(
     `SELECT COUNT(*) AS total FROM tickets t ${condicion}`,
@@ -155,6 +175,7 @@ exports.obtenerTicket = async (req, res) => {
   }
 
   const ticket = filas[0];
+  prepararTicket(ticket);
 
   // Los clientes solo pueden ver sus propios tickets
   if (req.usuario.rol === 'cliente' && ticket.cliente_id !== req.usuario.id) {
@@ -167,10 +188,31 @@ exports.obtenerTicket = async (req, res) => {
 // --- Actualizar estado de ticket ---
 exports.actualizarEstado = async (req, res) => {
   const { id } = req.params;
-  const { estado, motivo } = req.body;
+  const { estado, motivo, comentario_resolucion } = req.body;
 
   if (!estado || !ESTADOS.includes(estado)) {
     return res.status(400).json({ error: `estado inválido. Valores: ${ESTADOS.join(', ')}` });
+  }
+
+  if (estado === 'cerrado') {
+    return res.status(400).json({
+      error: 'Un ticket se cierra cuando el cliente confirma la solución mediante la encuesta CSAT.',
+    });
+  }
+
+  if (estado === 'rechazado' && !motivo?.trim()) {
+    return res.status(400).json({ error: 'Debes indicar el motivo del rechazo.' });
+  }
+
+  const motivoValidado = motivo ? validarComentario(motivo, 'El motivo') : { valor: '', error: null };
+  if (motivoValidado.error) return res.status(400).json({ error: motivoValidado.error });
+  const comentarioValidado = comentario_resolucion
+    ? validarComentario(comentario_resolucion, 'El comentario de resolución')
+    : { valor: '', error: null };
+  if (comentarioValidado.error) return res.status(400).json({ error: comentarioValidado.error });
+
+  if (estado === 'resuelto' && !comentario_resolucion?.trim()) {
+    return res.status(400).json({ error: 'Debes describir la solución aplicada antes de marcarlo como resuelto.' });
   }
 
   const [existe] = await pool.query('SELECT id, estado FROM tickets WHERE id = ?', [id]);
@@ -178,10 +220,30 @@ exports.actualizarEstado = async (req, res) => {
     return res.status(404).json({ error: 'Ticket no encontrado.' });
   }
 
+  const transiciones = {
+    nuevo: ['asignado', 'rechazado'],
+    asignado: ['en_proceso', 'rechazado'],
+    en_proceso: ['resuelto', 'rechazado'],
+    resuelto: ['en_proceso', 'rechazado'],
+    cerrado: [],
+    rechazado: [],
+    reabierto: ['en_proceso', 'rechazado'],
+  };
+  const estadoActual = existe[0].estado;
+  if (estado !== estadoActual && !transiciones[estadoActual].includes(estado)) {
+    return res.status(400).json({
+      error: `No se puede cambiar un ticket de ${estadoActual} a ${estado}.`,
+    });
+  }
+
   const campos = { estado };
   if (estado === 'resuelto') campos.resuelto_el = new Date();
-  if (estado === 'cerrado') campos.cerrado_el = new Date();
-  if (motivo) campos.motivo_reasignacion = motivo;
+  if (estado === 'resuelto') campos.comentario_resolucion = comentarioValidado.valor;
+  if (estado === 'en_proceso' && estadoActual === 'resuelto') {
+    campos.resuelto_el = null;
+    campos.comentario_resolucion = null;
+  }
+  if (motivoValidado.valor) campos.motivo_reasignacion = motivoValidado.valor;
 
   await pool.query('UPDATE tickets SET ? WHERE id = ?', [campos, id]);
 
@@ -196,10 +258,41 @@ exports.actualizarEstado = async (req, res) => {
 
   await pool.query(
     `INSERT INTO auditoria (usuario_id, accion, detalle) VALUES (?, 'actualizar_estado', ?)`,
-    [req.usuario.id, `Ticket #${id} de ${existe[0].estado} a ${estado}`]
+    [req.usuario.id, `Ticket #${id} de ${estadoActual} a ${estado}`]
   );
 
   return res.json({ mensaje: 'Estado actualizado.', nuevoEstado: estado });
+};
+
+// --- Reapertura solicitada por el cliente ---
+exports.reabrirTicket = async (req, res) => {
+  const { id } = req.params;
+  const [filas] = await pool.query(
+    'SELECT id, cliente_id, estado FROM tickets WHERE id = ? LIMIT 1',
+    [id]
+  );
+
+  if (filas.length === 0) return res.status(404).json({ error: 'Ticket no encontrado.' });
+  if (req.usuario.rol === 'cliente' && filas[0].cliente_id !== req.usuario.id) {
+    return res.status(403).json({ error: 'No puedes reabrir un ticket que no te pertenece.' });
+  }
+  if (!['resuelto', 'cerrado'].includes(filas[0].estado)) {
+    return res.status(400).json({ error: 'Solo se pueden reabrir tickets resueltos o cerrados.' });
+  }
+
+  await pool.query(
+    `UPDATE tickets
+        SET estado = 'reabierto', resuelto_el = NULL, cerrado_el = NULL,
+            comentario_resolucion = NULL
+      WHERE id = ?`,
+    [id]
+  );
+  await pool.query(
+    `INSERT INTO auditoria (usuario_id, accion, detalle) VALUES (?, 'reabrir_ticket', ?)`,
+    [req.usuario.id, `Ticket #${id} reabierto por solicitud del cliente`]
+  );
+
+  return res.json({ mensaje: 'Ticket reabierto correctamente.', nuevoEstado: 'reabierto' });
 };
 
 // --- Reasignar ticket (manual) ---
@@ -210,6 +303,8 @@ exports.reasignar = async (req, res) => {
   if (!analista_id) {
     return res.status(400).json({ error: 'analista_id es obligatorio.' });
   }
+  const motivoValidado = motivo ? validarComentario(motivo, 'El motivo') : { valor: '', error: null };
+  if (motivoValidado.error) return res.status(400).json({ error: motivoValidado.error });
 
   const [analista] = await pool.query('SELECT id, nombre FROM usuarios WHERE id = ? AND rol = ? AND activo = 1',
     [analista_id, 'analista']);
@@ -217,16 +312,19 @@ exports.reasignar = async (req, res) => {
     return res.status(400).json({ error: 'Analista no válido.' });
   }
 
-  const [existe] = await pool.query('SELECT id, analista_id FROM tickets WHERE id = ?', [id]);
+  const [existe] = await pool.query('SELECT id, analista_id, estado FROM tickets WHERE id = ?', [id]);
   if (existe.length === 0) {
     return res.status(404).json({ error: 'Ticket no encontrado.' });
+  }
+  if (['cerrado', 'rechazado'].includes(existe[0].estado)) {
+    return res.status(400).json({ error: 'No se puede reasignar un ticket cerrado o rechazado.' });
   }
 
   await pool.query(
     `UPDATE tickets SET analista_id = ?, estado = 'asignado',
        motivo_reasignacion = ?
      WHERE id = ?`,
-    [analista_id, motivo || 'Reasignación manual', id]
+    [analista_id, motivoValidado.valor || 'Reasignación manual', id]
   );
 
   await pool.query(
