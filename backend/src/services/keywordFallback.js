@@ -112,6 +112,7 @@ function analizarPorClaves(texto) {
     sentimiento,
     score_frustracion: score,
     indicadores_frustracion: indicadores,
+    confianza_clasificacion: 0.55,
     resumen_ejecutivo,
   };
 }

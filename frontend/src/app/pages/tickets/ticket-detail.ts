@@ -118,6 +118,18 @@ export class TicketDetailComponent implements OnInit {
     }
   }
 
+  async reabrir(): Promise<void> {
+    this.mensaje.set('');
+    this.error.set('');
+    try {
+      await firstValueFrom(this.ticketSvc.reabrir(this.id()));
+      this.mensaje.set('Ticket reabierto. El equipo volverá a revisarlo.');
+      await this.cargar();
+    } catch (e: any) {
+      this.error.set(e?.error?.error || 'No se pudo reabrir el ticket.');
+    }
+  }
+
   async reasignar(): Promise<void> {
     if (!this.analistaSeleccionado) return;
     this.mensaje.set('');

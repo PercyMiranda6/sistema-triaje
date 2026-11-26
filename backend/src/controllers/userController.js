@@ -6,7 +6,7 @@ exports.listarAnalistas = async (req, res) => {
   const [filas] = await pool.query(
     `SELECT u.id, u.nombre, u.email, u.especialidad, u.activo,
             (SELECT COUNT(*) FROM tickets t
-              WHERE t.analista_id = u.id AND t.estado IN ('nuevo','asignado','en_proceso')) AS carga_activa
+              WHERE t.analista_id = u.id AND t.estado IN ('nuevo','asignado','en_proceso','reabierto')) AS carga_activa
        FROM usuarios u
       WHERE u.rol = 'analista'
       ORDER BY u.especialidad ASC, u.nombre ASC`

@@ -19,7 +19,7 @@ export interface Ticket {
   sentimiento: 'Positivo' | 'Neutro' | 'Frustrado';
   score_frustracion: number;
   priority_score: number;
-  estado: 'nuevo' | 'asignado' | 'en_proceso' | 'resuelto' | 'cerrado' | 'rechazado';
+  estado: 'nuevo' | 'asignado' | 'en_proceso' | 'resuelto' | 'cerrado' | 'rechazado' | 'reabierto';
   cliente_id?: number;
   analista_id?: number | null;
   analista_nombre?: string | null;
@@ -33,6 +33,7 @@ export interface Ticket {
   motivo_reasignacion?: string | null;
   comentario_resolucion?: string | null;
   indicadores_frustracion?: string[] | null;
+  confianza_clasificacion?: number | null;
 }
 
 export interface Paginacion {

@@ -41,6 +41,7 @@ export class TicketListComponent {
     { v: 'resuelto', t: 'Resueltos' },
     { v: 'cerrado', t: 'Cerrados' },
     { v: 'rechazado', t: 'Rechazados' },
+    { v: 'reabierto', t: 'Reabiertos' },
   ];
 
   constructor() {

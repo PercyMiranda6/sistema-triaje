@@ -13,6 +13,9 @@ function prepararTicket(ticket) {
       ticket.indicadores_frustracion = [];
     }
   }
+  if (ticket.confianza_clasificacion !== null && ticket.confianza_clasificacion !== undefined) {
+    ticket.confianza_clasificacion = Number(ticket.confianza_clasificacion);
+  }
   return ticket;
 }
 
@@ -43,13 +46,14 @@ exports.crearTicket = async (req, res) => {
     `INSERT INTO tickets
        (codigo, cliente_id, asunto, descripcion_original, descripcion_anonimizada,
         categoria, severidad, sentimiento, score_frustracion, priority_score,
-        proveedor_ia, sla_horas, indicadores_frustracion, estado)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'nuevo')`,
+        proveedor_ia, sla_horas, indicadores_frustracion, confianza_clasificacion, estado)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'nuevo')`,
     [
       codigo, clienteId, asunto, descripcion, textoAnonimizado,
       resultado.categoria, resultado.severidad, resultado.sentimiento,
       resultado.score_frustracion, priorityScore, proveedor, slaHoras,
       JSON.stringify(resultado.indicadores_frustracion || []),
+      resultado.confianza_clasificacion,
     ]
   );
 
@@ -90,6 +94,7 @@ exports.crearTicket = async (req, res) => {
       proveedor_ia: proveedor,
       latencia_ms: latenciaMs,
       indicadores_frustracion: resultado.indicadores_frustracion || [],
+      confianza_clasificacion: resultado.confianza_clasificacion,
       analista_asignado: analista
         ? { id: analista.id, nombre: analista.nombre, email: analista.email }
         : null,
@@ -214,6 +219,7 @@ exports.actualizarEstado = async (req, res) => {
     resuelto: ['en_proceso', 'rechazado'],
     cerrado: [],
     rechazado: [],
+    reabierto: ['en_proceso', 'rechazado'],
   };
   const estadoActual = existe[0].estado;
   if (estado !== estadoActual && !transiciones[estadoActual].includes(estado)) {
@@ -248,6 +254,37 @@ exports.actualizarEstado = async (req, res) => {
   );
 
   return res.json({ mensaje: 'Estado actualizado.', nuevoEstado: estado });
+};
+
+// --- Reapertura solicitada por el cliente ---
+exports.reabrirTicket = async (req, res) => {
+  const { id } = req.params;
+  const [filas] = await pool.query(
+    'SELECT id, cliente_id, estado FROM tickets WHERE id = ? LIMIT 1',
+    [id]
+  );
+
+  if (filas.length === 0) return res.status(404).json({ error: 'Ticket no encontrado.' });
+  if (req.usuario.rol === 'cliente' && filas[0].cliente_id !== req.usuario.id) {
+    return res.status(403).json({ error: 'No puedes reabrir un ticket que no te pertenece.' });
+  }
+  if (!['resuelto', 'cerrado'].includes(filas[0].estado)) {
+    return res.status(400).json({ error: 'Solo se pueden reabrir tickets resueltos o cerrados.' });
+  }
+
+  await pool.query(
+    `UPDATE tickets
+        SET estado = 'reabierto', resuelto_el = NULL, cerrado_el = NULL,
+            comentario_resolucion = NULL
+      WHERE id = ?`,
+    [id]
+  );
+  await pool.query(
+    `INSERT INTO auditoria (usuario_id, accion, detalle) VALUES (?, 'reabrir_ticket', ?)`,
+    [req.usuario.id, `Ticket #${id} reabierto por solicitud del cliente`]
+  );
+
+  return res.json({ mensaje: 'Ticket reabierto correctamente.', nuevoEstado: 'reabierto' });
 };
 
 // --- Reasignar ticket (manual) ---

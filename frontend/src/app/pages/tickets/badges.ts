@@ -29,6 +29,7 @@ const ESTADOS_TEXTO: Record<string, string> = {
   resuelto: 'Resuelto',
   cerrado: 'Cerrado',
   rechazado: 'Rechazado',
+  reabierto: 'Reabierto',
 };
 
 export function estadoTexto(estado: string): string {

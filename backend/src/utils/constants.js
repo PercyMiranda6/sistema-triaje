@@ -4,7 +4,7 @@ const SEVERIDADES = ['Baja', 'Media', 'Alta', 'Critica'];
 
 const SENTIMIENTOS = ['Positivo', 'Neutro', 'Frustrado'];
 
-const ESTADOS = ['nuevo', 'asignado', 'en_proceso', 'resuelto', 'cerrado', 'rechazado'];
+const ESTADOS = ['nuevo', 'asignado', 'en_proceso', 'resuelto', 'cerrado', 'rechazado', 'reabierto'];
 
 const ROLES = ['cliente', 'analista', 'administrador'];
 

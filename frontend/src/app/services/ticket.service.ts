@@ -28,6 +28,10 @@ export class TicketService {
     return this.http.get<{ ticket: Ticket }>(`${this.api}/tickets/${id}`);
   }
 
+  reabrir(id: number): Observable<{ mensaje: string; nuevoEstado: string }> {
+    return this.http.post<{ mensaje: string; nuevoEstado: string }>(`${this.api}/tickets/${id}/reabrir`, {});
+  }
+
   actualizarEstado(id: number, estado: string, motivo?: string, comentarioResolucion?: string): Observable<{ mensaje: string; nuevoEstado: string }> {
     return this.http.patch<{ mensaje: string; nuevoEstado: string }>(`${this.api}/tickets/${id}/estado`, {
       estado,
