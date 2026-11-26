@@ -215,7 +215,7 @@ async function ejecutarTriaje({ asunto, descripcion }) {
   // 3) Fallback local por palabras clave (RNF03)
   if (!resultado) {
     const motivo = error
-      ? `error de API: ${error.message}`
+      ? `error de API (${error.name || 'proveedor externo'})`
       : respuestaBruta
         ? 'la respuesta del LLM no cumple el esquema de salida esperado'
         : 'no hay proveedor de IA configurado';

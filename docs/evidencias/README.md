@@ -79,7 +79,7 @@ La interfaz aplica un **sistema de diseño propio**, construido sobre tokens CSS
 | `consulta-evidencia.sql` | Las 11 consultas de verificación utilizadas |
 | `03-datos-reales.txt` | Resultado: totales, distribución por categoría/severidad/sentimiento, proveedor de IA, latencia del triaje, cola priorizada, evidencia de anonimización, bitácora de auditoría, carga por analista y cumplimiento de SLA |
 | `ticket_prueba_groq.json` | Respuesta cruda del triaje ejecutado con el modelo de lenguaje |
-| `tokens_por_rol.json` | Tokens de sesión generados para la captura de pantallas por rol |
+| `tokens_por_rol.json` | Omitido por seguridad; los tokens de sesión no se almacenan en el repositorio |
 
 ## 04-despliegue — Ambientes
 

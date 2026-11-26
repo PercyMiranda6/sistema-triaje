@@ -1,5 +1,6 @@
 const { pool } = require('../config/db');
 const { anonimizar } = require('../services/piiService');
+const { validarComentario } = require('../utils/commentValidation');
 
 /**
  * POST /api/encuestas/csat
@@ -43,7 +44,9 @@ const responderCsat = async (req, res) => {
     // Anonimizar PII en el comentario (Ley N° 29733)
     let comentarioAnonimizado = null;
     if (comentario && comentario.trim()) {
-      comentarioAnonimizado = anonimizar(comentario).texto;
+      const validacion = validarComentario(comentario, 'El comentario');
+      if (validacion.error) return res.status(400).json({ error: validacion.error });
+      comentarioAnonimizado = anonimizar(validacion.valor).texto;
     }
 
     await pool.query(
@@ -195,7 +198,9 @@ const responderNps = async (req, res) => {
 
     let comentarioAnonimizado = null;
     if (comentario && comentario.trim()) {
-      comentarioAnonimizado = anonimizar(comentario).texto;
+      const validacion = validarComentario(comentario, 'El comentario');
+      if (validacion.error) return res.status(400).json({ error: validacion.error });
+      comentarioAnonimizado = anonimizar(validacion.valor).texto;
     }
 
     await pool.query(

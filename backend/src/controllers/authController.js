@@ -49,6 +49,7 @@ exports.login = async (req, res) => {
   );
 
   if (filas.length === 0) {
+    req.registrarFalloLogin?.();
     return res.status(401).json({ error: 'Credenciales incorrectas.' });
   }
 
@@ -56,8 +57,11 @@ exports.login = async (req, res) => {
   const coincide = await bcrypt.compare(password, usuario.password_hash);
 
   if (!coincide) {
+    req.registrarFalloLogin?.();
     return res.status(401).json({ error: 'Credenciales incorrectas.' });
   }
+
+  req.limpiarFalloLogin?.();
 
   const token = firmarToken(usuario);
 

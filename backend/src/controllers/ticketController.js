@@ -4,6 +4,7 @@ const { ejecutarTriaje } = require('../services/aiClient');
 const { calcularPriorityScore } = require('../utils/priority');
 const { SLA_HORAS, CATEGORIAS, SEVERIDADES, SENTIMIENTOS, ESTADOS } = require('../utils/constants');
 const { buscarAnalistaIdoneo } = require('../services/routingService');
+const { validarComentario } = require('../utils/commentValidation');
 
 function prepararTicket(ticket) {
   if (typeof ticket.indicadores_frustracion === 'string') {
@@ -203,6 +204,13 @@ exports.actualizarEstado = async (req, res) => {
     return res.status(400).json({ error: 'Debes indicar el motivo del rechazo.' });
   }
 
+  const motivoValidado = motivo ? validarComentario(motivo, 'El motivo') : { valor: '', error: null };
+  if (motivoValidado.error) return res.status(400).json({ error: motivoValidado.error });
+  const comentarioValidado = comentario_resolucion
+    ? validarComentario(comentario_resolucion, 'El comentario de resolución')
+    : { valor: '', error: null };
+  if (comentarioValidado.error) return res.status(400).json({ error: comentarioValidado.error });
+
   if (estado === 'resuelto' && !comentario_resolucion?.trim()) {
     return res.status(400).json({ error: 'Debes describir la solución aplicada antes de marcarlo como resuelto.' });
   }
@@ -230,12 +238,12 @@ exports.actualizarEstado = async (req, res) => {
 
   const campos = { estado };
   if (estado === 'resuelto') campos.resuelto_el = new Date();
-  if (estado === 'resuelto') campos.comentario_resolucion = comentario_resolucion.trim();
+  if (estado === 'resuelto') campos.comentario_resolucion = comentarioValidado.valor;
   if (estado === 'en_proceso' && estadoActual === 'resuelto') {
     campos.resuelto_el = null;
     campos.comentario_resolucion = null;
   }
-  if (motivo) campos.motivo_reasignacion = motivo;
+  if (motivoValidado.valor) campos.motivo_reasignacion = motivoValidado.valor;
 
   await pool.query('UPDATE tickets SET ? WHERE id = ?', [campos, id]);
 
@@ -250,7 +258,7 @@ exports.actualizarEstado = async (req, res) => {
 
   await pool.query(
     `INSERT INTO auditoria (usuario_id, accion, detalle) VALUES (?, 'actualizar_estado', ?)`,
-    [req.usuario.id, `Ticket #${id} de ${estadoActual} a ${estado}${motivo ? `: ${motivo}` : ''}`]
+    [req.usuario.id, `Ticket #${id} de ${estadoActual} a ${estado}`]
   );
 
   return res.json({ mensaje: 'Estado actualizado.', nuevoEstado: estado });
@@ -295,6 +303,8 @@ exports.reasignar = async (req, res) => {
   if (!analista_id) {
     return res.status(400).json({ error: 'analista_id es obligatorio.' });
   }
+  const motivoValidado = motivo ? validarComentario(motivo, 'El motivo') : { valor: '', error: null };
+  if (motivoValidado.error) return res.status(400).json({ error: motivoValidado.error });
 
   const [analista] = await pool.query('SELECT id, nombre FROM usuarios WHERE id = ? AND rol = ? AND activo = 1',
     [analista_id, 'analista']);
@@ -314,7 +324,7 @@ exports.reasignar = async (req, res) => {
     `UPDATE tickets SET analista_id = ?, estado = 'asignado',
        motivo_reasignacion = ?
      WHERE id = ?`,
-    [analista_id, motivo || 'Reasignación manual', id]
+    [analista_id, motivoValidado.valor || 'Reasignación manual', id]
   );
 
   await pool.query(
