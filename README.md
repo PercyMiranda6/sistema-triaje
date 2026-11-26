@@ -19,7 +19,7 @@ Reducir FRT y MTTR de la mesa de ayuda TI y detectar insatisfacción temprana me
 
 ```
 ┌──────────────┐   HTTP/JSON   ┌────────────────────┐   HTTPS   ┌────────────────┐
-│ Frontend SPA │ ────────────► │  Backend Express   │ ────────► │ Groq / Gemini   │
+│ Frontend SPA │ ────────────► │  Backend Express   │ ────────► │       Groq     │
 │   Angular    │               │  JWT · PII · Triaje│           │ (LLM externo)  │
 └──────────────┘               └─────────┬──────────┘           └────────────────┘
                                          │ mysql2
