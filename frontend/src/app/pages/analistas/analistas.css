@@ -13,6 +13,30 @@
 
 .form-stack label { margin-bottom: 0.95rem; }
 
+.table-wrap td small {
+  display: block;
+  margin-top: 0.2rem;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.acciones-cell {
+  white-space: nowrap;
+  text-align: right;
+}
+
+.acciones-cell .btn { margin-left: 0.35rem; }
+
+.btn-danger {
+  background: var(--danger-soft);
+  color: var(--danger);
+  border-color: #f1c4ba;
+}
+
+.btn-danger:hover:not(:disabled) { background: #f8d8d2; }
+
+.form-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+
 @media (max-width: 880px) {
   .admin-grid { grid-template-columns: 1fr; }
 }

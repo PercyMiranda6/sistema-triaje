@@ -37,6 +37,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/analistas/analistas').then((m) => m.AnalistasComponent),
     canActivate: [authGuard, rolesGuard('administrador')],
   },
+  {
+    path: 'clientes',
+    loadComponent: () => import('./pages/clientes/clientes').then((m) => m.ClientesComponent),
+    canActivate: [authGuard, rolesGuard('administrador')],
+  },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: '**', redirectTo: 'login' },
 ];

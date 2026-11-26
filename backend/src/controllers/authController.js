@@ -10,6 +10,9 @@ exports.registrar = async (req, res) => {
   if (!nombre || !email || !password) {
     return res.status(400).json({ error: 'nombre, email y password son obligatorios.' });
   }
+  if (password.length < 8) {
+    return res.status(400).json({ error: 'La contraseña debe tener al menos 8 caracteres.' });
+  }
 
   const passwordHash = await bcrypt.hash(password, SALT);
 
@@ -17,10 +20,10 @@ exports.registrar = async (req, res) => {
     const [resultado] = await pool.query(
       `INSERT INTO usuarios (nombre, email, password_hash, rol, especialidad)
        VALUES (?, ?, ?, ?, ?)`,
-      [nombre, email.toLowerCase().trim(), passwordHash, rol || 'cliente', especialidad || null]
+      [nombre, email.toLowerCase().trim(), passwordHash, 'cliente', null]
     );
 
-    const usuario = { id: resultado.insertId, nombre, email, rol: rol || 'cliente' };
+    const usuario = { id: resultado.insertId, nombre, email, rol: 'cliente' };
     const token = firmarToken(usuario);
 
     return res.status(201).json({

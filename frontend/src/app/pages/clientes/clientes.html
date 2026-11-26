@@ -1,0 +1,61 @@
+<div class="page">
+  <div class="page-head">
+    <div>
+      <span class="eyebrow">Gestión de usuarios</span>
+      <h1>Gestión de clientes</h1>
+      <p>Administra las cuentas de clientes que registran solicitudes en la mesa de ayuda.</p>
+    </div>
+  </div>
+
+  @if (mensaje()) { <div class="alert alert-success">{{ mensaje() }}</div> }
+  @if (error()) { <div class="alert alert-error">{{ error() }}</div> }
+
+  <div class="admin-grid">
+    <section class="card">
+      <span class="eyebrow">Cartera de clientes</span>
+      <h2>Clientes registrados</h2>
+      @if (cargando()) {
+        <p class="muted">Cargando…</p>
+      } @else if (clientes().length === 0) {
+        <p class="muted">No hay clientes registrados.</p>
+      } @else {
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Cliente</th><th>Email</th><th>Acciones</th></tr></thead>
+            <tbody>
+              @for (cliente of clientes(); track cliente.id) {
+                <tr>
+                  <td><strong>{{ cliente.nombre }}</strong></td>
+                  <td>{{ cliente.email }}</td>
+                  <td class="acciones-cell">
+                    <button class="btn btn-outline btn-sm" type="button" (click)="editar(cliente)">Editar</button>
+                    <button class="btn btn-danger btn-sm" type="button" (click)="eliminar(cliente)">Eliminar</button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <button class="btn btn-outline btn-sm" type="button" (click)="cambiarPagina(-1)" [disabled]="pagina() <= 1">Anterior</button>
+          <span class="muted">Página {{ pagina() }} de {{ totalPaginas() }} · {{ total() }} clientes</span>
+          <button class="btn btn-outline btn-sm" type="button" (click)="cambiarPagina(1)" [disabled]="pagina() >= totalPaginas()">Siguiente</button>
+        </div>
+      }
+    </section>
+
+    <section class="card">
+      <span class="eyebrow">{{ editandoId ? 'Edición de cliente' : 'Alta de cliente' }}</span>
+      <h2>{{ editandoId ? 'Editar cliente' : 'Nuevo cliente' }}</h2>
+      <form class="form-stack" (ngSubmit)="guardar()">
+        <label>Nombre<input type="text" [(ngModel)]="nombre" name="nombre" required placeholder="Nombre completo" /></label>
+        <label>Email<input type="email" [(ngModel)]="email" name="email" required placeholder="cliente@empresa.com" /></label>
+        <label>Contraseña {{ editandoId ? '(opcional)' : '' }}<input type="password" [(ngModel)]="password" name="password" [required]="!editandoId" minlength="8" placeholder="Mínimo 8 caracteres" /></label>
+        <div class="form-actions">
+          <button class="btn btn-accent" type="submit">{{ editandoId ? 'Guardar cambios' : 'Crear cliente' }}</button>
+          @if (editandoId) { <button class="btn btn-outline" type="button" (click)="cancelarEdicion()">Cancelar</button> }
+        </div>
+      </form>
+    </section>
+  </div>
+</div>
