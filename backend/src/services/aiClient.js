@@ -108,12 +108,19 @@ function aplicarCriteriosHibridos(resultado, texto) {
   if (reglas.bloqueoCritico) severidad = 'Critica';
   else if (reglas.impactoAlto && severidad === 'Baja') severidad = 'Alta';
 
+  const acuerdoFrustracion = 1 - Math.abs(scoreModelo - reglas.score);
+  const confianza = Math.min(
+    0.98,
+    Math.max(0.35, 0.55 + acuerdoFrustracion * 0.25 + Math.min(indicadores.length, 3) * 0.05)
+  );
+
   return {
     ...resultado,
     severidad,
     sentimiento,
     score_frustracion: scoreFinal,
     indicadores_frustracion: indicadores,
+    confianza_clasificacion: Math.round(confianza * 100) / 100,
   };
 }
 
@@ -217,9 +224,7 @@ async function ejecutarTriaje({ asunto, descripcion }) {
     proveedor = PROVIDER.fallback;
   }
 
-  if (proveedor === PROVIDER.groq || proveedor === PROVIDER.gemini) {
-    resultado = aplicarCriteriosHibridos(resultado, textoAnonimizado);
-  }
+  resultado = aplicarCriteriosHibridos(resultado, textoAnonimizado);
 
   const latenciaMs = Date.now() - inicio;
 

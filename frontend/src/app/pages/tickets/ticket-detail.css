@@ -48,6 +48,21 @@
   line-height: 1.5;
 }
 
+.confianza-baja { color: var(--danger) !important; }
+
+.revision-alert {
+  padding: 0.8rem;
+  border: 1px solid #f1c4ba;
+  border-radius: var(--r-sm);
+  background: var(--danger-soft);
+}
+
+.revision-alert strong { color: var(--danger); }
+
+.reopen-card { margin-top: 1.15rem; }
+
+.reopen-card p { margin: 0.45rem 0 0.9rem; color: var(--text-2); }
+
 .prio-alta { color: var(--danger); }
 
 @media (max-width: 900px) {

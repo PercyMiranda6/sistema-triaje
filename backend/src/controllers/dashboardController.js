@@ -4,10 +4,10 @@ exports.resumen = async (req, res) => {
   const [totales] = await pool.query(
     `SELECT
        COUNT(*) AS total,
-       SUM(estado IN ('nuevo','asignado','en_proceso')) AS abiertos,
+       SUM(estado IN ('nuevo','asignado','en_proceso','reabierto')) AS abiertos,
        SUM(estado IN ('resuelto','cerrado')) AS resueltos,
        SUM(estado = 'nuevo') AS nuevos,
-       SUM(severidad = 'Critica' AND estado NOT IN ('resuelto','cerrado')) AS criticos_abiertos
+       SUM(severidad = 'Critica' AND estado NOT IN ('resuelto','cerrado','rechazado')) AS criticos_abiertos
        FROM tickets`
   );
 
