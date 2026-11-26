@@ -167,7 +167,7 @@ exports.obtenerTicket = async (req, res) => {
 // --- Actualizar estado de ticket ---
 exports.actualizarEstado = async (req, res) => {
   const { id } = req.params;
-  const { estado, motivo } = req.body;
+  const { estado, motivo, comentario_resolucion } = req.body;
 
   if (!estado || !ESTADOS.includes(estado)) {
     return res.status(400).json({ error: `estado inválido. Valores: ${ESTADOS.join(', ')}` });
@@ -181,6 +181,10 @@ exports.actualizarEstado = async (req, res) => {
 
   if (estado === 'rechazado' && !motivo?.trim()) {
     return res.status(400).json({ error: 'Debes indicar el motivo del rechazo.' });
+  }
+
+  if (estado === 'resuelto' && !comentario_resolucion?.trim()) {
+    return res.status(400).json({ error: 'Debes describir la solución aplicada antes de marcarlo como resuelto.' });
   }
 
   const [existe] = await pool.query('SELECT id, estado FROM tickets WHERE id = ?', [id]);
@@ -205,7 +209,11 @@ exports.actualizarEstado = async (req, res) => {
 
   const campos = { estado };
   if (estado === 'resuelto') campos.resuelto_el = new Date();
-  if (estado === 'en_proceso' && estadoActual === 'resuelto') campos.resuelto_el = null;
+  if (estado === 'resuelto') campos.comentario_resolucion = comentario_resolucion.trim();
+  if (estado === 'en_proceso' && estadoActual === 'resuelto') {
+    campos.resuelto_el = null;
+    campos.comentario_resolucion = null;
+  }
   if (motivo) campos.motivo_reasignacion = motivo;
 
   await pool.query('UPDATE tickets SET ? WHERE id = ?', [campos, id]);

@@ -4,6 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const { testConnection } = require('./config/db');
+const { ejecutarMigraciones } = require('./config/migrations');
 const { noEncontrado, errorGlobal } = require('./middleware/errorHandler');
 
 const app = express();
@@ -44,6 +45,7 @@ async function iniciar() {
     await testConnection();
     console.log('[DB] Conexión a MySQL establecida.');
 
+    await ejecutarMigraciones();
     await require('./seed')();
 
     app.listen(PORT, '0.0.0.0', () => {
